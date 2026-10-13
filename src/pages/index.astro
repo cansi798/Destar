@@ -1,0 +1,187 @@
+---
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/Hero.astro";
+import LeistungKarte from "../components/LeistungKarte.astro";
+import Ablauf from "../components/Ablauf.astro";
+import Faq from "../components/Faq.astro";
+import CtaBand from "../components/CtaBand.astro";
+import Standort from "../components/Standort.astro";
+import Icon from "../components/Icon.astro";
+import { SITE, u, waLink } from "../consts";
+import { ABLAUF, FAQ, VORTEILE, faqSchema } from "../data/home";
+import kratzer from "../assets/img/schaden-kratzer.webp";
+import delle from "../assets/img/schaden-delle.webp";
+import pistole from "../assets/img/lackierpistole-4x3.webp";
+
+const leistungen = (await getCollection("leistungen")).sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout
+  title="Destar Lackdoktor – Autolackiererei & Smart-Repair in Norderstedt"
+  description="Meisterbetrieb in Norderstedt: Lackreparatur, Smart-Repair, Karosserie, Autoglas und Unfallservice mit kompletter Schadensabwicklung. Kostenlose Begutachtung."
+  schema={[faqSchema(FAQ)]}
+>
+  <Hero />
+
+  <!-- Leistungen -->
+  <section class="section" id="leistungen" aria-labelledby="l-titel">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Unsere Leistungen</p>
+        <h2 id="l-titel">Vom Kratzer bis zum <span class="spray akzent">Unfallschaden</span></h2>
+        <p>Von der kostengünstigen Lackreparatur über Smart-Repair bis zur professionellen Aufbereitung – alles in unserer Werkstatt in Norderstedt.</p>
+      </div>
+      <div class="grid g-3 gap-lg">
+        {leistungen.map((l, i) => (
+          <LeistungKarte href={u(`leistungen/${l.id}/`)} titel={l.data.kurz} text={l.data.teaser} icon={l.data.icon} bild={l.data.bild} alt={l.data.bildAlt} nr={i + 1} />
+        ))}
+        <a class="extra glanz reveal" href="#aufbereitung">
+          <span class="extra__icon"><Icon name="drop" size={30} /></span>
+          <h3>Aufbereitung & Leasing-Rückgabe</h3>
+          <p>Fahrzeug zurückgeben oder verkaufen? Mit einer fachgerechten Aufbereitung übergeben Sie es sorgenfrei.</p>
+          <span class="extra__mehr">Mehr erfahren <Icon name="arrow" size={18} /></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Schadensfall + Aufbereitung -->
+  <section class="section section--grau" aria-labelledby="s-titel">
+    <div class="container zwei">
+      <div class="zwei__bild bild-spray reveal" style="--sx: 40%; --sy: 50%">
+        <Image src={pistole} alt="Hand eines Lackierers mit Lackierpistole" widths={[480, 640]} sizes="(min-width: 1024px) 520px, 92vw" />
+      </div>
+      <div>
+        <p class="eyebrow">Schadenmanagement</p>
+        <h2 id="s-titel">Im Schadensfall Ihr <span class="spray akzent">Partner</span></h2>
+        <p>Egal ob Unfall, Sturm oder andere Einflüsse: Wir übernehmen die komplette Schadensabwicklung – inklusive Kommunikation mit der Versicherung, Gutachten, Kalkulation und allen nötigen Schritten.</p>
+        <p>Dank freier Werkstattwahl im Haftpflichtfall setzen wir uns für Ihre Rechte und Leistungen ein – fair, engagiert und in Ihrem Sinne.</p>
+        <div id="aufbereitung" class="aufb">
+          <h3>Aufbereitung vor Leasing-Rückgabe oder Verkauf</h3>
+          <p>Sie geben ein Leasingfahrzeug zurück? Rechtzeitig vor Ende der Vertragslaufzeit bereiten wir es gezielt für die Rückgabe auf, damit Sie es sorgenfrei an die Leasinggesellschaft übergeben können. Auch vor einem geplanten Verkauf kann eine fachgerechte Aufbereitung den Fahrzeugwert deutlich steigern.</p>
+        </div>
+        <a class="btn" href={u("leistungen/unfallservice/")}>Zum Unfallservice <Icon name="arrow" size={20} /></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ablauf -->
+  <section class="section" id="ablauf" aria-labelledby="a-titel">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">So läuft es ab</p>
+        <h2 id="a-titel">Schicht für Schicht <span class="spray akzent">zum Ergebnis</span></h2>
+        <p>Vom ersten Anruf bis zur fertigen Lackierung – transparent und ohne Umwege.</p>
+      </div>
+      <Ablauf steps={ABLAUF} />
+    </div>
+  </section>
+
+  <!-- Vorteile -->
+  <section class="section section--dark metallic" aria-labelledby="v-titel">
+    <div class="container">
+      <div class="section-head section-head--center">
+        <p class="eyebrow">Warum Destar Lackdoktor</p>
+        <h2 id="v-titel">Professionell, transparent, <span class="spray akzent">zuverlässig</span></h2>
+      </div>
+      <ul class="vorteile">
+        {VORTEILE.map((v) => (
+          <li class="reveal">
+            <span class="vorteile__icon"><Icon name={v.icon} size={26} /></span>
+            <h3>{v.title}</h3>
+            <p>{v.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Typische Schäden (echte Fotos von der bisherigen Website) -->
+  <section class="section" aria-labelledby="b-titel">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Aus dem Werkstattalltag</p>
+        <h2 id="b-titel">Typische Schäden, die wir <span class="spray akzent">beheben</span></h2>
+        <p>Schrammen am Stoßfänger, Dellen im Blech: Solche Schäden sehen wir täglich – und finden die passende Reparatur, von Smart-Repair bis zur Lackierung.</p>
+      </div>
+      <div class="grid g-2 gap-lg">
+        <figure class="schaden reveal">
+          <div class="bild"><Image src={kratzer} alt="Kratzer und Schrammen am vorderen Stoßfänger eines silbernen Pkw" widths={[444]} sizes="(min-width: 640px) 46vw, 92vw" /></div>
+          <figcaption><strong>Lackschaden am Stoßfänger</strong> – ein typischer Fall für <a href={u("leistungen/lackierarbeiten/")}>Lackreparatur</a> oder <a href={u("leistungen/smart-repair/")}>Spot-Repair</a>.</figcaption>
+        </figure>
+        <figure class="schaden reveal">
+          <div class="bild"><Image src={delle} alt="Delle im hellen Karosserieblech eines Fahrzeugs" widths={[444]} sizes="(min-width: 640px) 46vw, 92vw" /></div>
+          <figcaption><strong>Delle im Blech</strong> – je nach Schaden per <a href={u("leistungen/smart-repair/")}>Ausbeulen ohne Lackschaden</a> oder <a href={u("leistungen/karosseriearbeiten/")}>Karosserie-Instandsetzung</a>.</figcaption>
+        </figure>
+      </div>
+      <p class="insta"><Icon name="instagram" size={22} /> Weitere Einblicke in unsere Arbeit: <a href={SITE.instagram} target="_blank" rel="noopener">@destar_lackdoktor auf Instagram</a></p>
+    </div>
+  </section>
+
+  <CtaBand />
+
+  <!-- FAQ -->
+  <section class="section section--grau" id="faq" aria-labelledby="f-titel">
+    <div class="container">
+      <div class="section-head section-head--center">
+        <p class="eyebrow">Häufige Fragen</p>
+        <h2 id="f-titel">Gut zu <span class="spray akzent">wissen</span></h2>
+      </div>
+      <Faq items={FAQ} />
+      <p class="text-center faq-mehr">Ihre Frage ist nicht dabei? <a href={waLink("Hallo Destar Lackdoktor, ich habe eine Frage: ")} target="_blank" rel="noopener">Schreiben Sie uns per WhatsApp</a> oder rufen Sie an.</p>
+    </div>
+  </section>
+
+  <!-- Standort -->
+  <section class="section" id="standort" aria-labelledby="o-titel">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Standort</p>
+        <h2 id="o-titel">Ihre Werkstatt in <span class="spray akzent">Norderstedt</span></h2>
+        <p>Sie finden uns im Distelweg 33-35 in Norderstedt, direkt an der Hamburger Stadtgrenze. Am besten vereinbaren Sie vorab kurz einen Termin.</p>
+      </div>
+      <Standort />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .extra {
+    display: flex; flex-direction: column; gap: 6px;
+    padding: 28px; border-radius: 6px 6px var(--r-lg) var(--r-lg);
+    background: var(--s-950); color: var(--s-300); text-decoration: none;
+    box-shadow: var(--shadow-sm);
+    background-image: radial-gradient(90% 70% at 100% 0%, rgba(200,32,14,.45), transparent 60%);
+    transition: transform var(--t), box-shadow var(--t);
+  }
+  .extra:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); color: var(--s-300); }
+  .extra h3 { color: var(--weiss); margin-top: 12px; }
+  .extra p { flex: 1; font-size: 16px; }
+  .extra__icon { width: 58px; height: 58px; border-radius: 50%; background: var(--rot); color: var(--weiss); display: grid; place-items: center; }
+  .extra__mehr { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; color: var(--weiss); }
+
+  .zwei { display: grid; gap: 40px; align-items: center; }
+  @media (min-width: 1024px) { .zwei { grid-template-columns: .9fr 1.1fr; gap: 64px; } }
+  .zwei__bild { border-radius: var(--r-lg); overflow: hidden; aspect-ratio: 4 / 3; box-shadow: var(--shadow-lg); }
+  .zwei__bild :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .aufb { margin: 28px 0; padding: 20px 22px; background: var(--weiss); border-left: 4px solid var(--rot); border-radius: 0 var(--r) var(--r) 0; box-shadow: var(--shadow-sm); scroll-margin-top: calc(var(--header-h) + 24px); }
+  .aufb h3 { font-size: 22px; }
+  .aufb p { margin: 0; }
+
+  .vorteile { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; background: rgba(255,255,255,.08); border-radius: var(--r-lg); overflow: hidden; }
+  @media (min-width: 640px) { .vorteile { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { .vorteile { grid-template-columns: repeat(3, 1fr); } }
+  .vorteile li { padding: 30px 26px; background: rgba(17,17,19,.86); }
+  .vorteile__icon { display: inline-grid; place-items: center; width: 52px; height: 52px; border-radius: 12px; margin-bottom: 14px; color: var(--weiss); background: linear-gradient(135deg, #e0412c, var(--rot-dunkel)); box-shadow: inset 0 1px 0 rgba(255,255,255,.35); }
+  .vorteile h3 { margin-bottom: 6px; }
+  .vorteile p { margin: 0; color: var(--s-300); font-size: 16px; }
+
+  .schaden { margin: 0; }
+  .schaden .bild { aspect-ratio: 4 / 3; }
+  .schaden figcaption { margin-top: 12px; color: var(--s-700); }
+  .insta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 32px; font-weight: 600; }
+  .insta :global(.icon) { color: var(--rot); }
+  .faq-mehr { margin: 28px auto 0; }
+</style>

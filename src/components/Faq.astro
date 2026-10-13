@@ -1,0 +1,31 @@
+---
+// FAQ als <details>-Akkordeon (funktioniert ohne JS). Erzeugt optional FAQPage-JSON-LD
+// über die aufrufende Seite (siehe faqSchema()).
+import Icon from "./Icon.astro";
+interface Props { items: { q: string; a: string }[]; }
+const { items } = Astro.props;
+---
+<div class="faq">
+  {items.map((f, i) => (
+    <details class="faq__item reveal" open={i === 0}>
+      <summary><span>{f.q}</span><span class="faq__plus"><Icon name="chevron" size={20} /></span></summary>
+      <div class="faq__antwort"><p>{f.a}</p></div>
+    </details>
+  ))}
+</div>
+
+<style>
+  .faq { display: grid; gap: 10px; max-width: 860px; margin-inline: auto; }
+  .faq__item { border-left: 4px solid var(--s-200); background: var(--weiss); border-radius: 0 var(--r) var(--r) 0; box-shadow: var(--shadow-sm); transition: border-color var(--t); }
+  .faq__item[open] { border-left-color: var(--rot); }
+  summary {
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    padding: 18px 20px; cursor: pointer; list-style: none;
+    font-weight: 700; font-size: 18px; line-height: 1.35;
+  }
+  summary::-webkit-details-marker { display: none; }
+  .faq__plus { flex: none; width: 34px; height: 34px; border-radius: 50%; background: var(--s-100); display: grid; place-items: center; transition: transform var(--t), background var(--t); }
+  .faq__item[open] .faq__plus { transform: rotate(180deg); background: var(--rot); color: var(--weiss); }
+  .faq__antwort { padding: 0 20px 18px; }
+  .faq__antwort p { margin: 0; color: var(--s-700); }
+</style>

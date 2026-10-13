@@ -1,0 +1,326 @@
+/* ============================================================
+   DESTAR LACKDOKTOR – Designsystem
+   Farben aus dem Logo: Signalrot (#C8200E), Schwarz, Weiß.
+   Schriften lokal (keine externen Anfragen): Barlow Condensed für
+   Überschriften (kräftig, technisch – passt zur Logo-Typo), Barlow für Text.
+   Grafisches Motiv: schräge Kante („Lackstreifen“) wie im Logo.
+   ============================================================ */
+
+@font-face { font-family: "Barlow"; font-style: normal; font-weight: 400; font-display: swap; src: url("./fonts/barlow-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow"; font-style: normal; font-weight: 500; font-display: swap; src: url("./fonts/barlow-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow"; font-style: normal; font-weight: 600; font-display: swap; src: url("./fonts/barlow-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow"; font-style: normal; font-weight: 700; font-display: swap; src: url("./fonts/barlow-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow Condensed"; font-style: normal; font-weight: 600; font-display: swap; src: url("./fonts/barlow-condensed-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow Condensed"; font-style: normal; font-weight: 700; font-display: swap; src: url("./fonts/barlow-condensed-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow Condensed"; font-style: normal; font-weight: 800; font-display: swap; src: url("./fonts/barlow-condensed-latin-800-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow Condensed"; font-style: italic; font-weight: 800; font-display: swap; src: url("./fonts/barlow-condensed-latin-800-italic.woff2") format("woff2"); }
+
+:root {
+  --rot: #C8200E;          /* Logo-Rot – Weiß darauf: Kontrast 5,7 : 1 */
+  --rot-dunkel: #A3190B;   /* Hover, roter Text auf Weiß (Kontrast > 7 : 1) */
+  --rot-hell: #FDEEEC;
+  --rot-auf-dunkel: #FF6B57; /* Rot-Akzent auf Schwarz (Kontrast > 5 : 1) */
+
+  --s-950: #111113;
+  --s-900: #18181B;
+  --s-800: #26262B;
+  --s-700: #3B3B42;
+  --s-600: #55555D;        /* Fließtext grau auf Weiß: 7,4 : 1 */
+  --s-400: #9B9BA3;
+  --s-300: #C4C4CA;
+  --s-200: #DEDEE2;
+  --s-100: #EEEEF0;
+  --s-50:  #F6F6F7;
+  --weiss: #FFFFFF;
+  --gruen: #1F7A3E;
+
+  --font-head: "Barlow Condensed", "Arial Narrow", Arial, sans-serif;
+  --font-body: "Barlow", Arial, sans-serif;
+
+  --r-sm: 4px;
+  --r: 8px;
+  --r-lg: 14px;
+
+  --shadow-sm: 0 1px 3px rgba(17, 17, 19, .08), 0 1px 2px rgba(17, 17, 19, .04);
+  --shadow: 0 6px 20px rgba(17, 17, 19, .10);
+  --shadow-lg: 0 18px 48px rgba(17, 17, 19, .18);
+
+  --max: 1200px;
+  --text: 700px;
+  --t: 180ms ease;
+  --header-h: 72px;
+  --stickybar-h: 64px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 16px); -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--s-900);
+  background: var(--weiss);
+  -webkit-font-smoothing: antialiased;
+  overflow-wrap: break-word;
+  overflow-x: clip; /* Sicherheitsnetz gegen Querscrollen durch Deko-Effekte */
+}
+img { max-width: 100%; height: auto; display: block; }
+a { color: var(--rot-dunkel); text-underline-offset: 3px; }
+a:hover { color: var(--rot); }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--rot); outline-offset: 3px; border-radius: var(--r-sm); }
+.section--dark :focus-visible, .hero :focus-visible, .ph :focus-visible, .ftr :focus-visible, .cta :focus-visible { outline-color: var(--weiss); }
+
+/* ---------- Typografie ---------- */
+h1, h2, h3, h4 {
+  font-family: var(--font-head);
+  font-weight: 800;
+  line-height: 1.05;
+  margin: 0 0 .5em;
+  color: var(--s-950);
+  text-transform: uppercase;
+  letter-spacing: .01em;
+}
+h1 { font-size: clamp(38px, 7vw, 68px); }
+h2 { font-size: clamp(30px, 4.6vw, 46px); }
+h3 { font-size: clamp(21px, 2.4vw, 25px); font-weight: 700; line-height: 1.15; }
+h4 { font-size: 19px; font-weight: 700; }
+p { margin: 0 0 1em; max-width: var(--text); }
+.akzent { color: var(--rot); font-style: italic; }
+.section--dark .akzent, .hero .akzent, .ph .akzent { color: var(--rot-auf-dunkel); }
+.lead { font-size: clamp(18px, 2vw, 20px); color: var(--s-700); }
+.klein { font-size: 15px; color: var(--s-600); }
+
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--rot-dunkel);
+  margin-bottom: 14px;
+}
+.eyebrow::before {
+  content: "";
+  width: 28px; height: 4px;
+  background: var(--rot);
+  transform: skewX(-24deg);
+}
+.section--dark .eyebrow, .hero .eyebrow, .ph .eyebrow { color: var(--weiss); }
+
+.section-head { max-width: 760px; margin-bottom: 40px; }
+.section-head p { color: var(--s-600); font-size: 18px; }
+.section--dark .section-head p { color: var(--s-300); }
+.section-head--center { margin-inline: auto; text-align: center; }
+.section-head--center p { margin-inline: auto; }
+
+/* ---------- Layout ---------- */
+.container { max-width: var(--max); margin-inline: auto; padding-inline: 16px; }
+@media (min-width: 480px) { .container { padding-inline: 20px; } }
+.section { padding-block: 64px; }
+@media (min-width: 768px) { .section { padding-block: 96px; } }
+.section--grau { background: var(--s-50); }
+.section--dark { background: var(--s-950); color: var(--s-200); }
+.section--dark h2, .section--dark h3 { color: var(--weiss); }
+.grid { display: grid; gap: 20px; }
+@media (min-width: 640px)  { .g-2, .g-3, .g-4 { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .g-3 { grid-template-columns: repeat(3, 1fr); } .g-4 { grid-template-columns: repeat(4, 1fr); } .gap-lg { gap: 28px; } }
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 50px;
+  padding: 12px 24px;
+  border: 2px solid transparent;
+  border-radius: var(--r);
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 19px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  line-height: 1.1;
+  text-decoration: none;
+  background: var(--rot);
+  color: var(--weiss);
+  transition: background var(--t), transform var(--t), box-shadow var(--t), border-color var(--t), color var(--t);
+}
+.btn:hover { background: var(--rot-dunkel); color: var(--weiss); transform: translateY(-1px); box-shadow: var(--shadow); }
+.btn:active { transform: none; }
+.btn .icon { flex: none; width: 22px; height: 22px; }
+.btn--dunkel { background: var(--s-950); }
+.btn--dunkel:hover { background: var(--s-700); }
+.btn--rahmen { background: transparent; border-color: var(--s-300); color: var(--s-950); }
+.btn--rahmen:hover { background: var(--s-100); border-color: var(--s-400); color: var(--s-950); }
+.btn--hell { background: var(--weiss); color: var(--s-950); }
+.btn--hell:hover { background: var(--s-100); color: var(--s-950); }
+.btn--glas { background: rgba(255, 255, 255, .08); border-color: rgba(255, 255, 255, .45); color: var(--weiss); }
+.btn--glas:hover { background: rgba(255, 255, 255, .18); color: var(--weiss); }
+.btn--wa { background: #1B7F43; }          /* WhatsApp-Grün, abgedunkelt (Kontrast 5,2 : 1) */
+.btn--wa:hover { background: #146534; }
+.btn--klein { min-height: 42px; padding: 8px 16px; font-size: 16px; }
+.btn-reihe { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* ---------- Karten ---------- */
+.card {
+  background: var(--weiss);
+  border: 1px solid var(--s-200);
+  border-radius: var(--r-lg);
+  padding: 26px;
+}
+.section--grau .card { border-color: transparent; box-shadow: var(--shadow-sm); }
+
+/* ---------- Listen ---------- */
+.haken { list-style: none; margin: 0 0 1em; padding: 0; display: grid; gap: 10px; }
+.haken li { position: relative; padding-left: 32px; }
+.haken li::before {
+  content: "";
+  position: absolute; left: 0; top: .2em;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--rot) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 12.5 4 4 8-9'/%3E%3C/svg%3E") center / 14px no-repeat;
+}
+.section--dark .haken li::before { background-color: var(--rot); }
+
+.tags { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.tags li {
+  padding: 6px 12px;
+  border-radius: var(--r-sm);
+  background: var(--s-100);
+  font-weight: 600;
+  font-size: 15px;
+}
+
+/* ---------- Icons ---------- */
+.icon { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---------- Bilder ---------- */
+.bild { border-radius: var(--r-lg); overflow: hidden; background: var(--s-100); }
+.bild img { width: 100%; height: 100%; object-fit: cover; }
+.bildnachweis { font-size: 13px; color: var(--s-600); margin-top: 8px; }
+
+/* ---------- Fließtext-Seiten (Impressum, Datenschutz) ---------- */
+.prosa { max-width: 780px; }
+.prosa h2 { font-size: clamp(26px, 3.4vw, 34px); margin-top: 1.6em; }
+.prosa h3 { font-size: 22px; margin-top: 1.4em; }
+.prosa ul { padding-left: 1.2em; margin: 0 0 1em; }
+.prosa li { margin-bottom: .35em; }
+.prosa address { font-style: normal; margin-bottom: 1em; }
+
+/* ---------- Reveal (nur mit JS) ---------- */
+html.js .reveal { opacity: 0; transform: translateY(18px); transition: opacity 500ms ease, transform 500ms ease; }
+html.js .reveal.ist-sichtbar { opacity: 1; transform: none; }
+
+/* ---------- Hilfsklassen ---------- */
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.skip {
+  position: absolute; left: 12px; top: -60px; z-index: 200;
+  background: var(--s-950); color: var(--weiss);
+  padding: 10px 16px; border-radius: var(--r);
+  font-weight: 700;
+}
+.skip:focus { top: 12px; color: var(--weiss); }
+.text-center { text-align: center; }
+
+/* Platz für die mobile Anruf-Leiste */
+@media (max-width: 1023px) { body { padding-bottom: calc(var(--stickybar-h) + env(safe-area-inset-bottom)); } }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  html.js .reveal { opacity: 1; transform: none; }
+}
+
+/* ============================================================
+   LACK-ANIMATIONEN (Kundenwunsch: Lack-/Sprühpistolen-Optik)
+   Alles rein CSS/SVG, startet erst, wenn das Element sichtbar ist
+   (Klasse .ist-sichtbar via IntersectionObserver) – ohne JS bzw. bei
+   „Bewegung reduzieren“ wird sofort das fertige Endbild gezeigt.
+   ============================================================ */
+
+/* 1) Aufgesprühter Text: weicher, fleckiger Sprührand wandert von links nach rechts,
+      davor zieht ein roter Farbnebel mit. */
+.spray { position: relative; display: inline-block; }
+html.js .spray {
+  -webkit-mask-image: linear-gradient(90deg, #000 0 42%, rgba(0,0,0,.55) 46%, rgba(0,0,0,.15) 50%, transparent 54%);
+          mask-image: linear-gradient(90deg, #000 0 42%, rgba(0,0,0,.55) 46%, rgba(0,0,0,.15) 50%, transparent 54%);
+  -webkit-mask-size: 260% 100%; mask-size: 260% 100%;
+  -webkit-mask-position: 100% 0; mask-position: 100% 0;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+}
+html.js .ist-sichtbar .spray, html.js .spray.ist-sichtbar {
+  animation: spray-auf 1.1s cubic-bezier(.4,.1,.3,1) .15s forwards;
+}
+@keyframes spray-auf {
+  to { -webkit-mask-position: 0 0; mask-position: 0 0; }
+}
+/* Farbnebel, der vor dem Sprührand herfliegt */
+.spray::after {
+  content: ""; position: absolute; top: -20%; bottom: -20%; left: -10%; width: 34%;
+  background:
+    radial-gradient(closest-side, rgba(200,32,14,.55), transparent),
+    radial-gradient(circle at 30% 30%, rgba(255,107,87,.5) 0 2px, transparent 3px) 0 0 / 11px 13px,
+    radial-gradient(circle at 70% 60%, rgba(200,32,14,.6) 0 1.5px, transparent 2.5px) 0 0 / 17px 15px;
+  filter: blur(1px);
+  opacity: 0; pointer-events: none;
+}
+html.js .ist-sichtbar .spray::after, html.js .spray.ist-sichtbar::after {
+  animation: nebel 1.1s cubic-bezier(.4,.1,.3,1) .15s; /* ohne forwards: Nebel landet nicht außerhalb (kein Querscrollen) */
+}
+@keyframes nebel {
+  0% { opacity: 0; transform: translateX(0); }
+  15% { opacity: 1; }
+  80% { opacity: .8; }
+  100% { opacity: 0; transform: translateX(330%); }
+}
+
+/* 2) Glanzlicht wie auf frischem Klarlack: wandert einmal über die Fläche */
+.glanz { position: relative; overflow: hidden; isolation: isolate; }
+.glanz::before {
+  content: ""; position: absolute; inset: -50% auto -50% -60%; width: 40%; z-index: 2;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,.55) 45%, rgba(255,255,255,.12) 55%, transparent);
+  transform: skewX(-18deg) translateX(0);
+  pointer-events: none; opacity: 0;
+}
+html.js .glanz.ist-sichtbar::before, html.js .ist-sichtbar .glanz::before { animation: glanz 1.6s ease .6s 1 both; }
+.btn.glanz:hover::before, a.glanz:hover::before { animation: glanz 0.9s ease 1 both; }
+@keyframes glanz {
+  0% { opacity: 0; transform: skewX(-18deg) translateX(0); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: skewX(-18deg) translateX(480%); }
+}
+
+/* 3) Bild „aufsprühen“: Sprühkegel öffnet sich weich von einem Punkt aus */
+html.js .bild-spray img {
+  -webkit-mask-image: radial-gradient(circle at var(--sx, 30%) var(--sy, 40%), #000 30%, rgba(0,0,0,.6) 45%, transparent 62%);
+          mask-image: radial-gradient(circle at var(--sx, 30%) var(--sy, 40%), #000 30%, rgba(0,0,0,.6) 45%, transparent 62%);
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-position: var(--sx, 30%) var(--sy, 40%); mask-position: var(--sx, 30%) var(--sy, 40%);
+  -webkit-mask-size: 0% 0%; mask-size: 0% 0%;
+}
+html.js .bild-spray.ist-sichtbar img { animation: bild-auf 1.4s cubic-bezier(.3,.1,.2,1) .1s forwards; }
+@keyframes bild-auf { to { -webkit-mask-size: 400% 400%; mask-size: 400% 400%; } }
+
+/* 4) Metallic-Lack-Fläche (dunkle Bereiche): weiche Reflexe wie lackiertes Blech */
+.metallic {
+  background:
+    radial-gradient(120% 80% at 85% -10%, rgba(255,255,255,.10), transparent 55%),
+    radial-gradient(80% 60% at 10% 110%, rgba(200,32,14,.22), transparent 60%),
+    linear-gradient(160deg, #1d1d22 0%, #0f0f12 55%, #1a1a1f 100%);
+}
+
+/* 5) Farbspritzer-Trenner (statische SVG-Grafik) */
+.spritzer { display: block; width: 100%; height: auto; color: var(--rot); }
+
+@media (prefers-reduced-motion: reduce) {
+  html.js .spray, html.js .bild-spray img { -webkit-mask-image: none; mask-image: none; }
+  .spray::after, .glanz::before { display: none; }
+}
+
+/* Eyebrow in Abschnittsköpfen behält ihre Farbe (sonst greift .section-head p) */
+.section-head p.eyebrow { color: var(--rot-dunkel); font-size: 15px; }
+.section--dark .section-head p.eyebrow { color: var(--weiss); }

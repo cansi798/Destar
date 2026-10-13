@@ -1,0 +1,70 @@
+---
+// Standort & Kontakt: Adresse, Öffnungszeiten, Kontaktwege. Karte bewusst NUR als Link
+// (kein eingebettetes Google Maps → keine Datenübertragung ohne Einwilligung).
+import { HOURS, SITE, mailLink, telLink, waLink } from "../consts";
+import Icon from "./Icon.astro";
+interface Props { titelEbene?: "h2" | "h3"; }
+const { titelEbene = "h3" } = Astro.props;
+const T = titelEbene;
+---
+<div class="so">
+  <div class="so__karte card">
+    <div class="so__plan" aria-hidden="true">
+      <svg viewBox="0 0 400 220" focusable="false">
+        <rect width="400" height="220" fill="#ececef" />
+        <path d="M-10 160 C80 140 160 170 410 120" stroke="#fff" stroke-width="18" fill="none" />
+        <path d="M120 -10 C140 80 110 150 150 230" stroke="#fff" stroke-width="12" fill="none" />
+        <path d="M260 -10 L240 230" stroke="#fff" stroke-width="9" fill="none" />
+        <path d="M-10 60 L410 80" stroke="#fff" stroke-width="7" fill="none" />
+        <circle cx="200" cy="104" r="34" fill="rgba(200,32,14,.15)" />
+        <path d="M200 120s20-17 20-31a20 20 0 0 0-40 0c0 14 20 31 20 31Z" fill="#C8200E" />
+        <circle cx="200" cy="89" r="7" fill="#fff" />
+      </svg>
+    </div>
+    <T class="so__titel">Destar Lackdoktor</T>
+    <address>
+      {SITE.street}<br />{SITE.zip} {SITE.city}
+    </address>
+    <a class="btn btn--dunkel btn--klein" href={SITE.mapsUrl} target="_blank" rel="noopener">
+      <Icon name="pin" size={20} /> Route in Google Maps öffnen
+    </a>
+    <p class="klein so__hinweis">Der Link öffnet Google Maps in einem neuen Fenster. Erst dann werden Daten an Google übertragen.</p>
+  </div>
+
+  <div class="so__info">
+    <div class="card">
+      <T class="so__titel"><Icon name="clock" size={22} /> Öffnungszeiten</T>
+      <dl class="so__zeiten">
+        {HOURS.map((h) => (<div><dt>{h.tag}</dt><dd>{h.zeit}</dd></div>))}
+      </dl>
+    </div>
+    <div class="card">
+      <T class="so__titel"><Icon name="phone" size={22} /> So erreichen Sie uns</T>
+      <ul class="so__wege">
+        <li><a href={telLink}><Icon name="phone" size={20} /> {SITE.phoneDisplay}</a></li>
+        <li><a href={waLink()} target="_blank" rel="noopener"><Icon name="whatsapp" size={20} /> WhatsApp-Nachricht</a></li>
+        <li><a href={mailLink()}><Icon name="mail" size={20} /> {SITE.email}</a></li>
+        <li><a href={SITE.instagram} target="_blank" rel="noopener"><Icon name="instagram" size={20} /> Instagram</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<style>
+  .so { display: grid; gap: 20px; }
+  @media (min-width: 900px) { .so { grid-template-columns: 1.1fr 1fr; } }
+  .so__plan { margin: -26px -26px 20px; border-radius: var(--r-lg) var(--r-lg) 0 0; overflow: hidden; }
+  .so__plan svg { display: block; width: 100%; height: auto; }
+  .so__titel { display: flex; align-items: center; gap: 10px; font-size: 24px; margin-bottom: 12px; }
+  .so__titel :global(.icon) { color: var(--rot); }
+  address { font-style: normal; font-size: 19px; margin-bottom: 18px; }
+  .so__hinweis { margin: 12px 0 0; font-size: 14px; }
+  .so__info { display: grid; gap: 20px; }
+  .so__zeiten { margin: 0; display: grid; gap: 8px; }
+  .so__zeiten div { display: flex; justify-content: space-between; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--s-200); }
+  .so__zeiten dd { margin: 0; font-weight: 700; text-align: right; }
+  .so__wege { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+  .so__wege a { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-weight: 600; color: var(--s-950); text-decoration: none; overflow-wrap: anywhere; }
+  .so__wege a:hover { color: var(--rot-dunkel); }
+  .so__wege :global(.icon) { color: var(--rot); flex: none; }
+</style>

@@ -1,0 +1,73 @@
+---
+// Datenschutzerklärung, angepasst an die neue statische Website:
+// Hosting GitHub Pages, keine Cookies, keine Analyse-Tools, keine externen Schriften,
+// keine eingebetteten Karten/Videos. Abschnitte zu WhatsApp/Instagram/E-Mail
+// sinngemäß von der bisherigen Erklärung übernommen.
+// WICHTIG: Bei Umzug auf eigenen Hoster Abschnitt „Hosting“ anpassen (OFFENE-INFOS.md).
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import { SITE, u } from "../consts";
+const crumbs = [{ name: "Datenschutz", href: u("datenschutz/") }];
+---
+<BaseLayout title="Datenschutzerklärung | Destar Lackdoktor" description="Datenschutzerklärung der Website von Destar Lackdoktor: keine Cookies, keine Tracker, keine externen Schriften." crumbs={crumbs}>
+  <PageHero titel="Datenschutz" crumbs={crumbs} buttons={false} lead="Kurz gesagt: Diese Website setzt keine Cookies, nutzt keine Analyse- oder Werbe-Tools und lädt keine Inhalte von Drittanbietern." />
+  <section class="section">
+    <div class="container prosa">
+      <h2>1. Verantwortliche Stelle</h2>
+      <p>Verantwortlich für die Datenverarbeitung auf dieser Website ist:</p>
+      <address>
+        {SITE.legal}<br />
+        {SITE.street}<br />
+        {SITE.zip} {SITE.city}, Deutschland<br />
+        Telefon: <a href={`tel:${SITE.phoneTel}`}>{SITE.phoneDisplay}</a><br />
+        E-Mail: <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+      </address>
+      <p>Verantwortliche Stelle ist die natürliche oder juristische Person, die allein oder gemeinsam mit anderen über die Zwecke und Mittel der Verarbeitung personenbezogener Daten entscheidet.</p>
+
+      <h2>2. Hosting und Server-Logdateien</h2>
+      <p>Diese Website wird als statische Seite über den Dienst <strong>GitHub Pages</strong> der GitHub Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA, bereitgestellt. Beim Aufruf der Seiten verarbeitet der Hoster technisch notwendige Daten, insbesondere die IP-Adresse, Datum und Uhrzeit des Abrufs, die aufgerufene Seite, den Browsertyp (User-Agent) und die Referrer-URL. Diese Daten werden benötigt, um die Website auszuliefern und die Sicherheit des Angebots zu gewährleisten.</p>
+      <p>Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO; unser berechtigtes Interesse liegt in der sicheren und fehlerfreien Bereitstellung der Website. GitHub ist Teil der Microsoft-Unternehmensgruppe; eine Übermittlung in die USA ist möglich. GitHub bzw. Microsoft ist nach dem EU-US Data Privacy Framework zertifiziert. Weitere Informationen: <a href="https://docs.github.com/de/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">Datenschutzerklärung von GitHub</a>.</p>
+
+      <h2>3. Keine Cookies, kein Tracking, keine externen Inhalte</h2>
+      <ul>
+        <li>Diese Website setzt <strong>keine Cookies</strong> und speichert keine Informationen auf Ihrem Endgerät.</li>
+        <li>Es werden <strong>keine Analyse- oder Werbe-Tools</strong> (z. B. Google Analytics, Matomo, Facebook-Pixel) eingesetzt.</li>
+        <li>Alle <strong>Schriftarten sind lokal eingebunden</strong>; beim Seitenaufruf wird keine Verbindung zu Google Fonts oder anderen Schriftdiensten aufgebaut.</li>
+        <li>Es sind <strong>keine Karten, Videos oder Social-Media-Inhalte eingebettet</strong>. Links zu Google Maps, WhatsApp oder Instagram sind normale Links: Erst wenn Sie darauf klicken, verlassen Sie unsere Website und es gelten die Datenschutzbestimmungen des jeweiligen Anbieters.</li>
+      </ul>
+
+      <h2>4. Kontaktaufnahme per E-Mail, Telefon oder Kontaktformular</h2>
+      <p>Wenn Sie uns per E-Mail oder Telefon kontaktieren, verarbeiten wir Ihre Angaben (z. B. Name, Telefonnummer, E-Mail-Adresse, Angaben zum Fahrzeug und Ihre Nachricht) zur Bearbeitung Ihrer Anfrage. Das Kontaktformular auf dieser Website überträgt keine Daten an einen Server: Es bereitet lediglich eine E-Mail in Ihrem eigenen E-Mail-Programm vor, die Sie selbst absenden.</p>
+      <p>Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, sofern Ihre Anfrage mit der Erfüllung eines Vertrags zusammenhängt oder zur Durchführung vorvertraglicher Maßnahmen erforderlich ist, im Übrigen unser berechtigtes Interesse an der Beantwortung Ihrer Anfrage (Art. 6 Abs. 1 lit. f DSGVO). Ihre Daten werden gelöscht, sobald Ihre Anfrage abschließend bearbeitet ist, sofern keine gesetzlichen Aufbewahrungspflichten (z. B. steuer- oder handelsrechtliche Fristen) entgegenstehen.</p>
+
+      <h2>5. Kontakt über WhatsApp</h2>
+      <p>Sie können uns über den Nachrichtendienst WhatsApp der WhatsApp Ireland Limited, 4 Grand Canal Square, Grand Canal Harbour, Dublin 2, Irland, kontaktieren. Wir nutzen dafür die „Business-Version“ von WhatsApp. WhatsApp ist Teil der Meta-Unternehmensgruppe; Meta kann Daten der Nutzer (z. B. Telefonnummer, IP-Adresse) auch in den USA verarbeiten.</p>
+      <p>Kontaktieren Sie uns per WhatsApp, speichern und verwenden wir Ihre Mobilfunknummer und – falls angegeben – Ihren Namen ausschließlich zur Beantwortung Ihres Anliegens (Art. 6 Abs. 1 lit. b DSGVO bei konkreten Aufträgen, sonst Art. 6 Abs. 1 lit. f DSGVO). Eine Weitergabe an Dritte findet nicht statt. Für unser WhatsApp-Business-Konto verwenden wir ein Gerät, in dessen Adressbuch nur die Kontakte von Personen gespeichert sind, die uns über WhatsApp kontaktiert haben. Wenn Sie nicht möchten, dass Meta Ihre Daten verarbeitet, nutzen Sie bitte Telefon oder E-Mail. Weitere Informationen: <a href="https://www.whatsapp.com/legal/privacy-policy-eea" target="_blank" rel="noopener">Datenschutzrichtlinie von WhatsApp</a>.</p>
+
+      <h2>6. Unser Instagram-Auftritt</h2>
+      <p>Wir unterhalten eine Instagram-Seite unter <a href={SITE.instagram} target="_blank" rel="noopener">instagram.com/destar_lackdoktor</a>. Auf dieser Website ist Instagram nur verlinkt, nicht eingebunden. Nutzen Sie unsere Instagram-Seite, sind neben uns auch die Meta Platforms Ireland Ltd., 4 Grand Canal Square, Grand Canal Harbour, Dublin 2, Irland, für die Datenverarbeitung verantwortlich. Auf die Datenverarbeitung durch Meta haben wir keinen Einfluss. Näheres: <a href="https://privacycenter.instagram.com/policy" target="_blank" rel="noopener">Datenschutzrichtlinie von Instagram</a>.</p>
+
+      <h2>7. Speicherdauer</h2>
+      <p>Soweit nicht anders angegeben, speichern wir personenbezogene Daten nur so lange, wie es für den jeweiligen Zweck erforderlich ist oder gesetzliche Aufbewahrungsfristen es vorschreiben.</p>
+
+      <h2>8. Ihre Rechte</h2>
+      <p>Sie haben im Rahmen der gesetzlichen Bestimmungen jederzeit das Recht auf:</p>
+      <ul>
+        <li>Auskunft über Ihre gespeicherten Daten (Art. 15 DSGVO),</li>
+        <li>Berichtigung (Art. 16 DSGVO) und Löschung (Art. 17 DSGVO),</li>
+        <li>Einschränkung der Verarbeitung (Art. 18 DSGVO),</li>
+        <li>Datenübertragbarkeit (Art. 20 DSGVO),</li>
+        <li>Widerruf erteilter Einwilligungen mit Wirkung für die Zukunft (Art. 7 Abs. 3 DSGVO),</li>
+        <li>Beschwerde bei einer Datenschutz-Aufsichtsbehörde (Art. 77 DSGVO). Zuständig für uns ist das Unabhängige Landeszentrum für Datenschutz Schleswig-Holstein (ULD), Kiel.</li>
+      </ul>
+      <h3>Widerspruchsrecht (Art. 21 DSGVO)</h3>
+      <p><strong>Verarbeiten wir Ihre Daten auf Grundlage eines berechtigten Interesses, können Sie dieser Verarbeitung aus Gründen, die sich aus Ihrer besonderen Situation ergeben, jederzeit widersprechen.</strong> Wir verarbeiten die Daten dann nicht mehr, es sei denn, wir können zwingende schutzwürdige Gründe nachweisen oder die Verarbeitung dient der Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen.</p>
+      <p>Für alle Fragen zum Datenschutz wenden Sie sich bitte an die oben genannte verantwortliche Stelle.</p>
+
+      <h2>9. SSL-/TLS-Verschlüsselung</h2>
+      <p>Diese Website nutzt aus Sicherheitsgründen eine SSL- bzw. TLS-Verschlüsselung. Eine verschlüsselte Verbindung erkennen Sie an „https://“ in der Adresszeile Ihres Browsers.</p>
+
+      <p class="klein">Stand: Oktober 2026</p>
+    </div>
+  </section>
+</BaseLayout>

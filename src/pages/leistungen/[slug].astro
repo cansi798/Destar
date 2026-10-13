@@ -1,0 +1,126 @@
+---
+// Leistungsseite – eine Vorlage für alle Leistungen aus src/content/leistungen/.
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import Faq from "../../components/Faq.astro";
+import CtaBand from "../../components/CtaBand.astro";
+import LeistungKarte from "../../components/LeistungKarte.astro";
+import Icon from "../../components/Icon.astro";
+import { u } from "../../consts";
+import { faqSchema } from "../../data/home";
+
+export async function getStaticPaths() {
+  const alle = (await getCollection("leistungen")).sort((a, b) => a.data.order - b.data.order);
+  return alle.map((l) => ({ params: { slug: l.id }, props: { l, alle } }));
+}
+const { l, alle } = Astro.props;
+const { Content } = await render(l);
+const d = l.data;
+const andere = alle.filter((x) => x.id !== l.id);
+const crumbs = [
+  { name: "Leistungen", href: u("leistungen/") },
+  { name: d.kurz, href: u(`leistungen/${l.id}/`) },
+];
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  name: d.kurz,
+  description: d.beschreibung,
+  serviceType: d.kurz,
+  provider: { "@id": new URL(u(""), Astro.site).href + "#betrieb" },
+  areaServed: { "@type": "City", name: "Norderstedt" },
+};
+---
+
+<BaseLayout
+  title={`${d.kurz} in Norderstedt | Destar Lackdoktor`}
+  description={d.beschreibung}
+  crumbs={crumbs}
+  schema={[serviceSchema, ...(d.faq.length ? [faqSchema(d.faq)] : [])]}
+>
+  <PageHero eyebrow={`Leistung · ${d.kurz}`} titel={d.title} akzent={d.akzent} lead={d.lead} bild={d.bild} alt={d.bildAlt} crumbs={crumbs} />
+
+  <section class="section">
+    <div class="container ld">
+      <div class="ld__text prosa reveal">
+        <Content />
+      </div>
+      <aside class="ld__box reveal" aria-labelledby="punkte-titel">
+        <h2 id="punkte-titel" class="ld__boxtitel">{d.punkteTitel}</h2>
+        <ul class="haken">{d.punkte.map((p) => <li>{p}</li>)}</ul>
+        <a class="btn glanz" href={u("kontakt-anfahrt/#anfrage")}>Kostenlos begutachten lassen</a>
+        {!d.bildEcht && <p class="ld__hinweis">Abbildung oben: Symbolbild.</p>}
+      </aside>
+    </div>
+  </section>
+
+  {d.vorteile.length > 0 && (
+    <section class="section section--grau">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Ihre Vorteile</p>
+          <h2>{d.kurz} bei <span class="spray akzent">Destar</span></h2>
+        </div>
+        <ul class="grid g-3 vt">
+          {d.vorteile.map((v) => (
+            <li class="card reveal">
+              <span class="vt__icon"><Icon name={v.icon} size={26} /></span>
+              <h3>{v.title}</h3>
+              <p>{v.text}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  {d.faq.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <div class="section-head section-head--center">
+          <p class="eyebrow">Häufige Fragen</p>
+          <h2>Fragen zu {d.kurz}</h2>
+        </div>
+        <Faq items={d.faq} />
+      </div>
+    </section>
+  )}
+
+  <CtaBand />
+
+  <section class="section section--grau">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Weitere Leistungen</p>
+        <h2>Das können wir <span class="spray akzent">auch</span></h2>
+      </div>
+      <div class="grid g-4">
+        {andere.map((x) => (
+          <LeistungKarte href={u(`leistungen/${x.id}/`)} titel={x.data.kurz} text={x.data.teaser} icon={x.data.icon} bild={x.data.bild} alt={x.data.bildAlt} nr={x.data.order} />
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .ld { display: grid; gap: 40px; align-items: start; }
+  @media (min-width: 1024px) { .ld { grid-template-columns: 1.4fr 1fr; gap: 64px; } }
+  .ld__text :global(p:first-child) { font-size: 19px; }
+  .ld__text :global(h3:first-child) { margin-top: 0; }
+  .ld__box {
+    position: relative; padding: 30px 26px 26px;
+    background: var(--s-950); color: var(--s-200);
+    border-radius: var(--r-lg);
+    background-image: radial-gradient(80% 60% at 100% 0%, rgba(200,32,14,.4), transparent 60%);
+  }
+  @media (min-width: 1024px) { .ld__box { position: sticky; top: calc(var(--header-h) + 24px); } }
+  .ld__boxtitel { color: var(--weiss); font-size: 26px; margin-bottom: 18px; }
+  .ld__box .haken { margin-bottom: 24px; }
+  .ld__box :global(.btn) { width: 100%; }
+  .ld__hinweis { margin: 14px 0 0; font-size: 13px; color: var(--s-400); }
+  .vt { list-style: none; margin: 0; padding: 0; }
+  .vt__icon { display: inline-grid; place-items: center; width: 50px; height: 50px; border-radius: 12px; background: var(--rot-hell); color: var(--rot-dunkel); margin-bottom: 14px; }
+  .vt p { margin: 0; color: var(--s-600); }
+</style>

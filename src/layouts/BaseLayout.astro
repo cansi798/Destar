@@ -1,0 +1,130 @@
+---
+// Grundgerüst aller Seiten: SEO-Kopf (Meta, Open Graph, Schema.org), Kopf-/Fußzeile,
+// mobile Kontaktleiste, Scroll-Reveal. Keine Tracker, keine externen Schriften/Dienste.
+import "../styles/global.css";
+import IconSprite from "../components/IconSprite.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import StickyBar from "../components/StickyBar.astro";
+import { LEISTUNGEN_NAV, SITE, u } from "../consts";
+
+interface Props {
+  title: string;
+  description: string;
+  noindex?: boolean;
+  /** Brotkrumen für Schema.org (Startseite wird automatisch vorangestellt). */
+  crumbs?: { name: string; href: string }[];
+  /** Zusätzliche JSON-LD-Objekte (z. B. FAQPage, Service). */
+  schema?: object[];
+}
+const { title, description, noindex = false, crumbs = [], schema = [] } = Astro.props;
+
+const site = Astro.site!;
+const abs = (p: string) => new URL(p, site).href;
+const canonical = abs(Astro.url.pathname);
+const ogImage = abs(u("assets/og-image.jpg"));
+const home = abs(u(""));
+
+// Echte Firmendaten von der bisherigen Website – keine Bewertungen/Preise erfunden.
+const business = {
+  "@context": "https://schema.org",
+  "@type": "AutoRepair",
+  "@id": home + "#betrieb",
+  name: SITE.name,
+  legalName: SITE.legal,
+  url: home,
+  logo: abs(u("assets/logo.png")),
+  image: ogImage,
+  telephone: SITE.phoneTel,
+  email: SITE.email,
+  vatID: SITE.vat.replace(/\s/g, ""),
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: SITE.street,
+    postalCode: SITE.zip,
+    addressLocality: SITE.city,
+    addressRegion: "Schleswig-Holstein",
+    addressCountry: "DE",
+  },
+  hasMap: SITE.mapsUrl,
+  openingHoursSpecification: [
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      opens: "08:00",
+      closes: "17:00",
+    },
+  ],
+  sameAs: [SITE.instagram],
+  areaServed: { "@type": "City", name: "Norderstedt" },
+  makesOffer: LEISTUNGEN_NAV.map((l) => ({
+    "@type": "Offer",
+    itemOffered: { "@type": "Service", name: l.label, url: abs(l.href) },
+  })),
+};
+
+const breadcrumb = crumbs.length
+  ? {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [{ name: "Startseite", href: u("") }, ...crumbs].map((c, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: c.name,
+        item: abs(c.href),
+      })),
+    }
+  : null;
+
+const jsonLd = [business, breadcrumb, ...schema].filter(Boolean);
+---
+
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content={noindex ? "noindex,follow" : "index,follow"} />
+    <link rel="canonical" href={canonical} />
+    <link rel="sitemap" href={u("sitemap.xml")} />
+    <link rel="icon" href={u("favicon.svg")} type="image/svg+xml" />
+    <link rel="icon" href={u("assets/favicon-32.png")} sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href={u("assets/favicon-180.png")} />
+    <meta name="theme-color" content="#111113" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="de_DE" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd.length === 1 ? jsonLd[0] : jsonLd)} />
+    <script is:inline>document.documentElement.classList.add("js");</script>
+  </head>
+  <body>
+    <a class="skip" href="#inhalt">Zum Inhalt springen</a>
+    <IconSprite />
+    <Header />
+    <main id="inhalt" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+    <StickyBar />
+    <script>
+      // Scroll-Reveal + Lack-Animationen (Sprühen, Glanz) starten erst bei Sichtbarkeit –
+      // reine Zusatzschicht – ohne JS bleibt alles sichtbar.
+      const els = document.querySelectorAll(".reveal, .spray, .glanz, .bild-spray, .strich-wrap");
+      if ("IntersectionObserver" in window) {
+        const io = new IntersectionObserver((entries) => {
+          for (const e of entries) if (e.isIntersecting) { e.target.classList.add("ist-sichtbar"); io.unobserve(e.target); }
+        }, { rootMargin: "0px 0px -8% 0px" });
+        els.forEach((el) => io.observe(el));
+      } else els.forEach((el) => el.classList.add("ist-sichtbar"));
+    </script>
+  </body>
+</html>

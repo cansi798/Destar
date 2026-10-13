@@ -1,0 +1,73 @@
+---
+// Kopfbereich der Unterseiten: Brotkrumen, H1 mit aufgesprühtem Akzentwort,
+// Einleitung, Kontakt-Buttons, optional ein Bild rechts.
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import { SITE, telLink, u, waLink } from "../consts";
+import Icon from "./Icon.astro";
+import SprayStrich from "./SprayStrich.astro";
+
+interface Props {
+  eyebrow?: string;
+  titel: string;
+  akzent?: string;           // Wort/Teil, der rot „aufgesprüht“ wird (hinter dem Titel)
+  lead?: string;
+  bild?: ImageMetadata;
+  alt?: string;
+  crumbs?: { name: string; href: string }[];
+  buttons?: boolean;
+}
+const { eyebrow, titel, akzent, lead, bild, alt = "", crumbs = [], buttons = true } = Astro.props;
+---
+
+<section class="ph metallic">
+  <div class:list={["container", "ph__grid", { "ph__grid--bild": bild }]}>
+    <div>
+      {crumbs.length > 0 && (
+        <nav class="ph__crumbs" aria-label="Brotkrumen">
+          <ol>
+            <li><a href={u("")}>Startseite</a></li>
+            {crumbs.map((c, i) => (
+              <li>{i === crumbs.length - 1 ? <span aria-current="page">{c.name}</span> : <a href={c.href}>{c.name}</a>}</li>
+            ))}
+          </ol>
+        </nav>
+      )}
+      {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+      <h1>{titel}{akzent && <> <span class="spray akzent">{akzent}</span></>}</h1>
+      <SprayStrich class="ph__strich" />
+      {lead && <p class="lead">{lead}</p>}
+      <slot />
+      {buttons && (
+        <div class="btn-reihe">
+          <a class="btn glanz" href={telLink}><Icon name="phone" size={22} /> {SITE.phoneDisplay}</a>
+          <a class="btn btn--wa" href={waLink()} target="_blank" rel="noopener"><Icon name="whatsapp" size={22} /> WhatsApp</a>
+        </div>
+      )}
+    </div>
+    {bild && (
+      <div class="ph__bild bild-spray" style="--sx: 60%; --sy: 45%">
+        <Image src={bild} alt={alt} widths={[480, 720, 960]} sizes="(min-width: 1024px) 480px, 92vw" loading="eager" />
+      </div>
+    )}
+  </div>
+  <svg class="ph__kante" viewBox="0 0 1440 40" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 40V26L1440 0v40Z" fill="#fff" /></svg>
+</section>
+
+<style>
+  .ph { position: relative; color: var(--s-300); padding: 36px 0 72px; overflow: hidden; }
+  @media (min-width: 1024px) { .ph { padding: 56px 0 96px; } }
+  .ph__grid { display: grid; gap: 32px; align-items: center; }
+  @media (min-width: 1024px) { .ph__grid--bild { grid-template-columns: 1.2fr .8fr; gap: 56px; } }
+  .ph h1 { color: var(--weiss); font-size: clamp(36px, 6vw, 60px); margin-bottom: 8px; hyphens: auto; }
+  .ph :global(.ph__strich) { width: min(60%, 300px); margin-bottom: 20px; }
+  .ph .lead { color: var(--s-300); }
+  .ph__crumbs ol { list-style: none; margin: 0 0 20px; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; font-size: 14px; }
+  .ph__crumbs li + li::before { content: "/"; margin-right: 6px; color: var(--s-400); }
+  .ph__crumbs a { color: var(--s-300); }
+  .ph__crumbs a:hover { color: var(--weiss); }
+  .ph__crumbs [aria-current] { color: var(--weiss); }
+  .ph__bild { border-radius: var(--r-lg); overflow: hidden; aspect-ratio: 4 / 3; box-shadow: 0 24px 50px rgba(0,0,0,.45); background: #1b1b20; }
+  .ph__bild :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .ph__kante { position: absolute; left: 0; right: 0; bottom: -1px; width: 100%; height: 34px; display: block; }
+</style>

@@ -1,0 +1,125 @@
+---
+// Startseiten-Hero: dunkle Metallic-Lackfläche, Überschrift wird „aufgesprüht“,
+// rechts ein echtes Schadensfoto (von der alten Website), das per Sprühkegel erscheint.
+// Ein kleiner Canvas-Sprühnebel läuft EINMAL beim Laden (ca. 2 s) und stoppt dann –
+// bei „Bewegung reduzieren“ oder ohne JS gar nicht.
+import { Image } from "astro:assets";
+import { SITE, telLink, u, waLink } from "../consts";
+import Icon from "./Icon.astro";
+import SprayStrich from "./SprayStrich.astro";
+import kratzer from "../assets/img/schaden-kratzer.webp";
+
+const checks = ["Meisterbetrieb", "Kostenlose Begutachtung", "Komplette Schadensabwicklung", "Pkw & Wohnmobil"];
+---
+
+<section class="hero metallic">
+  <canvas class="hero__nebel" aria-hidden="true"></canvas>
+  <div class="container hero__grid">
+    <div class="hero__text">
+      <p class="eyebrow">Autolackiererei · Smart-Repair · Unfallservice</p>
+      <h1>Ihr <span class="spray akzent">Lack-Experte</span><br /> in Norderstedt</h1>
+      <SprayStrich class="hero__strich" />
+      <p class="lead">
+        Fahrzeuglackierung und Schadenmanagement – professionell, transparent, zuverlässig.
+        Wir begutachten Ihr Fahrzeug kostenlos und kümmern uns vom Kratzer bis zum Unfallschaden um alles.
+      </p>
+      <div class="btn-reihe">
+        <a class="btn glanz" href={telLink}><Icon name="phone" size={22} /> {SITE.phoneDisplay}</a>
+        <a class="btn btn--wa" href={waLink()} target="_blank" rel="noopener"><Icon name="whatsapp" size={22} /> WhatsApp</a>
+        <a class="btn btn--glas" href={u("kontakt-anfahrt/#anfrage")}>Termin anfragen <Icon name="arrow" size={20} /></a>
+      </div>
+      <ul class="hero__checks">
+        {checks.map((c) => <li><Icon name="check" size={18} /> {c}</li>)}
+      </ul>
+    </div>
+
+    <figure class="hero__bild">
+      <div class="hero__rahmen bild-spray" style="--sx: 45%; --sy: 55%">
+        <Image src={kratzer} alt="Silberner Pkw mit Kratzern und Schrammen am vorderen Stoßfänger und Kotflügel" widths={[444, 666]} sizes="(min-width: 1024px) 460px, 92vw" loading="eager" fetchpriority="high" />
+      </div>
+      <figcaption>Typischer Lackschaden – ein Fall für Lackreparatur oder Smart-Repair.</figcaption>
+    </figure>
+  </div>
+  <svg class="hero__kante" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    <path d="M0 60V38L1440 0v60Z" fill="#fff" />
+  </svg>
+</section>
+
+<style>
+  .hero { position: relative; color: var(--s-200); overflow: hidden; padding: 48px 0 84px; }
+  @media (min-width: 1024px) { .hero { padding: 80px 0 120px; } }
+  .hero__nebel { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .hero__grid { position: relative; display: grid; gap: 40px; align-items: center; }
+  @media (min-width: 1024px) { .hero__grid { grid-template-columns: 1.15fr .85fr; gap: 56px; } }
+  .hero h1 { color: var(--weiss); margin-bottom: 10px; }
+  .hero :global(.hero__strich) { margin: 0 0 22px; width: min(70%, 340px); }
+  .hero .lead { color: var(--s-300); margin-bottom: 28px; }
+  .hero__checks { list-style: none; padding: 0; margin: 28px 0 0; display: flex; flex-wrap: wrap; gap: 10px 22px; }
+  .hero__checks li { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--weiss); font-size: 16px; }
+  .hero__checks :global(.icon) { color: var(--rot-auf-dunkel); stroke-width: 3; }
+
+  .hero__bild { margin: 0; position: relative; }
+  .hero__rahmen {
+    position: relative; border-radius: var(--r-lg); overflow: hidden;
+    aspect-ratio: 4 / 3; background: #1b1b20;
+    box-shadow: 0 30px 60px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.08);
+    transform: rotate(-1.5deg);
+  }
+  .hero__rahmen :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .hero__rahmen::after { /* Klarlack-Reflex über dem Foto */
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(125deg, rgba(255,255,255,.18) 0%, transparent 30%, transparent 70%, rgba(255,255,255,.06) 100%);
+  }
+  .hero__bild figcaption { margin-top: 16px; font-size: 15px; color: var(--s-300); }
+  .hero__bild::before { /* roter Sprühfleck hinter dem Foto */
+    content: ""; position: absolute; width: 70%; aspect-ratio: 1; right: -12%; top: -14%;
+    background: radial-gradient(closest-side, rgba(200,32,14,.55), rgba(200,32,14,.15) 60%, transparent);
+    filter: blur(6px);
+  }
+  .hero__kante { position: absolute; left: 0; right: 0; bottom: -1px; width: 100%; height: 48px; display: block; }
+  .hero :global(.btn) { flex: 1 1 auto; }
+  @media (min-width: 560px) { .hero :global(.btn) { flex: 0 0 auto; } }
+</style>
+
+<script>
+  // Einmaliger Sprühnebel: Partikel fliegen aus einer gedachten Düse links oben
+  // schräg über den Hero, verblassen und der Canvas wird danach geleert.
+  const cv = document.querySelector<HTMLCanvasElement>(".hero__nebel");
+  const ruhig = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (cv && !ruhig) {
+    const ctx = cv.getContext("2d")!;
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    const groesse = () => { cv.width = cv.clientWidth * dpr; cv.height = cv.clientHeight * dpr; };
+    groesse();
+    const W = cv.width, H = cv.height;
+    type P = { x: number; y: number; vx: number; vy: number; r: number; a: number; c: string };
+    const teile: P[] = [];
+    const farben = ["200,32,14", "255,107,87", "230,60,40"];
+    const start = performance.now();
+    const dauer = 1800;
+    const schritt = (t: number) => {
+      const el = t - start;
+      // Düse wandert während des Sprühens nach rechts (wie ein Sprühgang)
+      if (el < dauer * 0.7) {
+        const fx = (el / (dauer * 0.7));
+        const nx = W * (0.05 + fx * 0.55), ny = H * (0.18 + fx * 0.1);
+        for (let i = 0; i < 26; i++) {
+          const w = (Math.random() - 0.5) * 0.9 + 0.35;
+          const v = (2 + Math.random() * 5) * dpr;
+          teile.push({ x: nx, y: ny, vx: Math.cos(w) * v, vy: Math.sin(w) * v, r: (0.6 + Math.random() * 2.2) * dpr, a: 0.5 + Math.random() * 0.4, c: farben[i % 3] });
+        }
+      }
+      ctx.clearRect(0, 0, W, H);
+      for (let i = teile.length - 1; i >= 0; i--) {
+        const p = teile[i];
+        p.x += p.vx; p.y += p.vy; p.vx *= 0.96; p.vy = p.vy * 0.96 + 0.02 * dpr; p.a *= 0.965;
+        if (p.a < 0.02) { teile.splice(i, 1); continue; }
+        ctx.fillStyle = `rgba(${p.c},${p.a})`;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill();
+      }
+      if (el < dauer + 1500 && (teile.length || el < dauer)) requestAnimationFrame(schritt);
+      else ctx.clearRect(0, 0, W, H);
+    };
+    requestAnimationFrame(schritt);
+  }
+</script>

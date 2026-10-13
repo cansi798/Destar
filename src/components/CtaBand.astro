@@ -1,0 +1,40 @@
+---
+// Roter Handlungsaufruf mit Sprühnebel-Textur und Glanzlicht.
+import { SITE, telLink, u, waLink } from "../consts";
+import Icon from "./Icon.astro";
+interface Props { titel?: string; text?: string; }
+const {
+  titel = "Kratzer, Delle oder Unfall?",
+  text = "Wir begutachten Ihr Fahrzeug kostenlos und sagen Ihnen ehrlich, welche Reparatur sinnvoll ist.",
+} = Astro.props;
+---
+<section class="cta glanz" aria-labelledby="cta-titel">
+  <div class="container cta__inner">
+    <div>
+      <h2 id="cta-titel">{titel}</h2>
+      <p>{text}</p>
+    </div>
+    <div class="btn-reihe">
+      <a class="btn btn--hell" href={telLink}><Icon name="phone" size={22} /> {SITE.phoneDisplay}</a>
+      <a class="btn btn--dunkel" href={waLink()} target="_blank" rel="noopener"><Icon name="whatsapp" size={22} /> WhatsApp</a>
+      <a class="btn btn--dunkel" href={u("kontakt-anfahrt/#anfrage")}><Icon name="mail" size={22} /> Anfrage</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    color: var(--weiss);
+    background:
+      radial-gradient(circle at 12% 30%, rgba(255,255,255,.14) 0 1.5px, transparent 2.5px) 0 0 / 23px 19px,
+      radial-gradient(circle at 60% 70%, rgba(0,0,0,.18) 0 1.5px, transparent 2.5px) 0 0 / 29px 31px,
+      radial-gradient(70% 140% at 100% 0%, #e2341f, transparent 60%),
+      linear-gradient(120deg, #a3190b, var(--rot) 55%, #b51c0c);
+    padding-block: 56px;
+  }
+  .cta__inner { display: grid; gap: 24px; align-items: center; }
+  @media (min-width: 1024px) { .cta__inner { grid-template-columns: 1fr auto; gap: 48px; } }
+  .cta h2 { color: var(--weiss); margin-bottom: 8px; }
+  .cta p { margin: 0; color: #fff3f1; font-size: 18px; }
+  .cta .btn-reihe :global(.btn) { flex: 1 1 auto; }
+</style>

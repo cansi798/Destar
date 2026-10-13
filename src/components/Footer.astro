@@ -1,0 +1,87 @@
+---
+// Fußbereich: Kontakt, Öffnungszeiten, Leistungen, Rechtliches.
+import { HOURS, LEISTUNGEN_NAV, SITE, mailLink, telLink, u, waLink } from "../consts";
+import Icon from "./Icon.astro";
+
+const jahr = new Date().getFullYear();
+---
+
+<footer class="ftr">
+  <div class="container ftr__grid">
+    <div class="ftr__marke">
+      <span class="ftr__logo">
+        <picture>
+          <source srcset={u("assets/logo.webp")} type="image/webp" />
+          <img src={u("assets/logo.png")} alt="Destar Lackdoktor Meisterbetrieb" width="300" height="100" loading="lazy" decoding="async" />
+        </picture>
+      </span>
+      <p>Lackreparatur, Smart-Repair, Karosserie, Autoglas und Unfallservice – Ihre Werkstatt in Norderstedt.</p>
+      <a class="ftr__insta" href={SITE.instagram} target="_blank" rel="noopener"><Icon name="instagram" size={20} /> Destar auf Instagram</a>
+    </div>
+
+    <div>
+      <h2 class="ftr__kopf">Kontakt</h2>
+      <ul class="ftr__liste">
+        <li><Icon name="pin" size={20} /><a href={SITE.mapsUrl} target="_blank" rel="noopener">{SITE.street}<br />{SITE.zip} {SITE.city}</a></li>
+        <li><Icon name="phone" size={20} /><a href={telLink}>{SITE.phoneDisplay}</a></li>
+        <li><Icon name="whatsapp" size={20} /><a href={waLink()} target="_blank" rel="noopener">WhatsApp schreiben</a></li>
+        <li><Icon name="mail" size={20} /><a href={mailLink()}>{SITE.email}</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="ftr__kopf">Öffnungszeiten</h2>
+      <dl class="ftr__zeiten">
+        {HOURS.map((h) => (<div><dt>{h.tag}</dt><dd>{h.zeit}</dd></div>))}
+      </dl>
+    </div>
+
+    <div>
+      <h2 class="ftr__kopf">Leistungen</h2>
+      <ul class="ftr__links">
+        {LEISTUNGEN_NAV.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+      </ul>
+    </div>
+  </div>
+
+  <div class="container ftr__unten">
+    <span>© {jahr} {SITE.legal}</span>
+    <ul>
+      <li><a href={u("kontakt-anfahrt/")}>Kontakt & Anfahrt</a></li>
+      <li><a href={u("impressum/")}>Impressum</a></li>
+      <li><a href={u("datenschutz/")}>Datenschutz</a></li>
+    </ul>
+  </div>
+</footer>
+
+<style>
+  .ftr { background: var(--s-950); color: var(--s-300); position: relative; }
+  .ftr::before { content: ""; display: block; height: 6px; background: linear-gradient(100deg, var(--rot) 0 40%, transparent 40.2%); }
+  .ftr a { color: var(--s-200); text-decoration: none; }
+  .ftr a:hover { color: var(--weiss); text-decoration: underline; }
+  .ftr__grid { display: grid; gap: 32px; padding-block: 56px 40px; }
+  @media (min-width: 640px) { .ftr__grid { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1024px) { .ftr__grid { grid-template-columns: 1.2fr 1fr 1.15fr .9fr; gap: 40px; } }
+  .ftr__logo { display: inline-block; background: var(--weiss); padding: 8px 14px; border-radius: var(--r); margin-bottom: 16px; }
+  .ftr__logo img { height: 56px; width: auto; }
+  .ftr__marke p { font-size: 16px; color: var(--s-300); }
+  .ftr__insta { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; }
+  .ftr__kopf { font-size: 20px; color: var(--weiss); margin-bottom: 16px; letter-spacing: .06em; }
+  .ftr__liste, .ftr__links { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; font-size: 16px; }
+  .ftr__liste li { display: flex; gap: 10px; align-items: flex-start; }
+  .ftr__liste :global(.icon) { color: var(--rot-auf-dunkel); flex: none; margin-top: 2px; }
+  .ftr__zeiten { margin: 0; display: grid; gap: 8px; font-size: 16px; }
+  .ftr__zeiten div { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--s-800); padding-bottom: 8px; }
+  .ftr__zeiten dt { color: var(--s-300); }
+  .ftr__zeiten dd { margin: 0; color: var(--weiss); font-weight: 600; text-align: right; white-space: nowrap; }
+  .ftr__zeiten dt { white-space: nowrap; }
+  .ftr__unten {
+    display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; align-items: center;
+    padding-block: 18px; border-top: 1px solid var(--s-800);
+    font-size: 14px; color: var(--s-400);
+  }
+  .ftr__unten ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 20px; }
+  @media (max-width: 767px) {
+    .ftr__links a, .ftr__unten a { display: inline-block; padding-block: 4px; }
+  }
+</style>

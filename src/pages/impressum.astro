@@ -1,0 +1,45 @@
+---
+// Angaben 1:1 von der bisherigen Website übernommen (Stand Oktober 2026).
+// Offene Punkte (z. B. Handwerkskammer/Meistertitel) siehe OFFENE-INFOS.md.
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import { SITE, u } from "../consts";
+const crumbs = [{ name: "Impressum", href: u("impressum/") }];
+---
+<BaseLayout title="Impressum | Destar Lackdoktor" description="Impressum der Destar Lackdoktor UG (haftungsbeschränkt), Distelweg 33-35, 22844 Norderstedt." crumbs={crumbs}>
+  <PageHero titel="Impressum" crumbs={crumbs} buttons={false} />
+  <section class="section">
+    <div class="container prosa">
+      <h2>Angaben gemäß § 5 DDG</h2>
+      <address>
+        {SITE.legal}<br />
+        {SITE.street}<br />
+        {SITE.zip} {SITE.city}
+      </address>
+
+      <h3>Vertreten durch</h3>
+      <p>Geschäftsführer: {SITE.managing}</p>
+
+      <h3>Kontakt</h3>
+      <p>
+        Telefon: <a href={`tel:${SITE.phoneTel}`}>{SITE.phoneDisplay}</a><br />
+        E-Mail: <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+      </p>
+
+      <h3>Registereintrag</h3>
+      <p>Registergericht: {SITE.registerCourt}<br />Registernummer: {SITE.registerNo}</p>
+
+      <h3>Umsatzsteuer-ID</h3>
+      <p>Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:<br />{SITE.vat}</p>
+
+      <h3>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h3>
+      <p>{SITE.managing}<br />{SITE.street}, {SITE.zip} {SITE.city}</p>
+
+      <h3>Verbraucherstreitbeilegung</h3>
+      <p>Hinweis gemäß § 36 Verbraucherstreitbeilegungsgesetz (VSBG): Wir sind zur Teilnahme an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle weder verpflichtet noch bereit.</p>
+
+      <h3>Bildnachweis</h3>
+      <p>Fotos: Destar Lackdoktor bzw. Bildmaterial der bisherigen Website. Grafiken und Symbole: eigene Gestaltung.</p>
+    </div>
+  </section>
+</BaseLayout>

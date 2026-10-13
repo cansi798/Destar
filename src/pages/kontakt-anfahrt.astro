@@ -1,0 +1,124 @@
+---
+// Kontakt & Anfahrt (gleiche URL wie bisher). Das Formular hat KEIN Backend: Es setzt
+// aus den Eingaben eine E-Mail zusammen und öffnet das E-Mail-Programm (mailto).
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import Standort from "../components/Standort.astro";
+import Icon from "../components/Icon.astro";
+import { SITE, telLink, u, waLink } from "../consts";
+
+const crumbs = [{ name: "Kontakt & Anfahrt", href: u("kontakt-anfahrt/") }];
+const anliegen = ["Lackschaden / Lackierung", "Smart-Repair (Kratzer, Delle, Felge)", "Karosserie", "Unfallschaden", "Autoglas / Steinschlag", "Aufbereitung / Leasing-Rückgabe", "Sonstiges"];
+---
+
+<BaseLayout
+  title="Kontakt & Anfahrt | Destar Lackdoktor Norderstedt"
+  description="So erreichen Sie Destar Lackdoktor: Distelweg 33-35, 22844 Norderstedt. Telefon 0152 53983255, WhatsApp oder E-Mail. Mo–Fr 8–17 Uhr."
+  crumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Kontakt & Anfahrt"
+    titel="Sprechen Sie"
+    akzent="uns an"
+    lead="Am schnellsten erreichen Sie uns telefonisch oder per WhatsApp. Gern können Sie uns auch eine Anfrage per E-Mail schicken – wir melden uns schnellstmöglich."
+    crumbs={crumbs}
+  />
+
+  <section class="section">
+    <div class="container kt">
+      <div class="kt__wege">
+        <a class="weg reveal" href={telLink}>
+          <span class="weg__icon"><Icon name="phone" size={26} /></span>
+          <span><strong>Anrufen</strong>{SITE.phoneDisplay}</span>
+        </a>
+        <a class="weg weg--wa reveal" href={waLink()} target="_blank" rel="noopener">
+          <span class="weg__icon"><Icon name="whatsapp" size={26} /></span>
+          <span><strong>WhatsApp</strong>Nachricht schreiben</span>
+        </a>
+        <a class="weg reveal" href={`mailto:${SITE.email}`}>
+          <span class="weg__icon"><Icon name="mail" size={26} /></span>
+          <span><strong>E-Mail</strong>{SITE.email}</span>
+        </a>
+      </div>
+
+      <form class="form card" id="anfrage" action={`mailto:${SITE.email}`} method="post" enctype="text/plain" aria-labelledby="form-titel">
+        <h2 id="form-titel">Anfrage <span class="spray akzent">senden</span></h2>
+        <p class="klein">Felder mit * sind Pflichtfelder. Beim Absenden öffnet sich Ihr E-Mail-Programm mit einer fertigen Nachricht an uns – über diese Website selbst werden keine Daten übertragen oder gespeichert.</p>
+        <div class="form__reihe">
+          <label>Name *<input name="Name" autocomplete="name" required /></label>
+          <label>Telefon<input name="Telefon" type="tel" autocomplete="tel" inputmode="tel" /></label>
+        </div>
+        <div class="form__reihe">
+          <label>E-Mail<input name="E-Mail" type="email" autocomplete="email" /></label>
+          <label>Fahrzeug (Marke / Modell)<input name="Fahrzeug" /></label>
+        </div>
+        <label>Anliegen
+          <select name="Anliegen">
+            {anliegen.map((a) => <option>{a}</option>)}
+          </select>
+        </label>
+        <label>Ihre Nachricht *<textarea name="Nachricht" rows="5" required placeholder="Beschreiben Sie kurz den Schaden oder Ihren Wunsch."></textarea></label>
+        <p class="klein form__tipp"><Icon name="camera" size={18} /> Tipp: Hängen Sie in Ihrem E-Mail-Programm gern Fotos vom Schaden an.</p>
+        <p class="klein">Hinweise zum Umgang mit Ihren Daten finden Sie in unserer <a href={u("datenschutz/")}>Datenschutzerklärung</a>.</p>
+        <button class="btn glanz" type="submit"><Icon name="mail" size={22} /> E-Mail vorbereiten</button>
+        <p class="form__status klein" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <section class="section section--grau" id="anfahrt" aria-labelledby="anfahrt-titel">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Anfahrt</p>
+        <h2 id="anfahrt-titel">So finden Sie <span class="spray akzent">zu uns</span></h2>
+      </div>
+      <Standort />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .kt { display: grid; gap: 32px; align-items: start; }
+  @media (min-width: 1024px) { .kt { grid-template-columns: .8fr 1.2fr; gap: 48px; } }
+  .kt__wege { display: grid; gap: 14px; }
+  .weg { display: flex; align-items: center; gap: 16px; padding: 18px 20px; border-radius: var(--r-lg); background: var(--s-50); color: var(--s-950); text-decoration: none; border: 1px solid var(--s-200); transition: transform var(--t), box-shadow var(--t); overflow-wrap: anywhere; }
+  .weg:hover { transform: translateY(-2px); box-shadow: var(--shadow); color: var(--s-950); }
+  .weg strong { display: block; font-family: var(--font-head); font-size: 22px; text-transform: uppercase; }
+  .weg__icon { flex: none; width: 54px; height: 54px; border-radius: 50%; background: var(--rot); color: var(--weiss); display: grid; place-items: center; }
+  .weg--wa .weg__icon { background: #1B7F43; }
+
+  .form { display: grid; gap: 16px; scroll-margin-top: calc(var(--header-h) + 16px); }
+  .form h2 { margin-bottom: 0; }
+  .form p { margin: 0; }
+  .form__reihe { display: grid; gap: 16px; }
+  @media (min-width: 640px) { .form__reihe { grid-template-columns: 1fr 1fr; } }
+  label { display: grid; gap: 6px; font-weight: 600; font-size: 16px; }
+  input, select, textarea {
+    font: inherit; font-weight: 400; color: var(--s-950);
+    padding: 12px 14px; min-height: 48px;
+    border: 1.5px solid var(--s-300); border-radius: var(--r);
+    background: var(--weiss); width: 100%;
+  }
+  input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--rot); outline-offset: 1px; border-color: var(--rot); }
+  textarea { resize: vertical; }
+  .form__tipp { display: flex; gap: 8px; align-items: center; }
+  .form :global(.btn) { justify-self: start; }
+</style>
+
+<script>
+  // mailto mit lesbarem Text zusammenbauen (statt „text/plain“-Rohformat des Browsers).
+  const form = document.getElementById("anfrage") as HTMLFormElement | null;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (!form.reportValidity()) return;
+    const fd = new FormData(form);
+    const zeilen: string[] = [];
+    for (const [k, v] of fd.entries()) if (String(v).trim() && k !== "Nachricht") zeilen.push(`${k}: ${v}`);
+    const body = `${fd.get("Nachricht")}\n\n---\n${zeilen.join("\n")}`;
+    const betreff = `Anfrage: ${fd.get("Anliegen")} – ${fd.get("Name")}`;
+    const ziel = form.getAttribute("action")!;
+    location.href = `${ziel}?subject=${encodeURIComponent(betreff)}&body=${encodeURIComponent(body)}`;
+    const status = form.querySelector(".form__status");
+    if (status) status.textContent = "Ihr E-Mail-Programm sollte sich jetzt öffnen. Falls nicht, schreiben Sie uns direkt an die oben genannte Adresse.";
+  });
+</script>

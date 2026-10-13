@@ -1,0 +1,220 @@
+---
+// Kopfzeile: Logo, Hauptnavigation mit Leistungs-Dropdown (Desktop), Telefon + Anfrage-Button.
+// Mobil: Telefon-Symbol + Burger (Vollbild-Menü). Dropdown funktioniert per Hover,
+// Tastatur-Fokus und Klick; Escape schließt.
+import { NAV, SITE, telLink, u } from "../consts";
+import Icon from "./Icon.astro";
+
+const pfad = Astro.url.pathname;
+const aktiv = (href: string) => !href.includes("#") && href !== u("") && pfad.startsWith(href);
+---
+
+<header class="hdr" id="kopf">
+  <div class="container hdr__inner">
+    <a class="hdr__logo" href={u("")} aria-label="Destar Lackdoktor – zur Startseite">
+      <picture>
+        <source srcset={u("assets/logo.webp")} type="image/webp" />
+        <img src={u("assets/logo.png")} alt="Destar Lackdoktor Meisterbetrieb" width="300" height="100" />
+      </picture>
+    </a>
+
+    <nav class="hdr__nav" aria-label="Hauptnavigation">
+      <ul>
+        {NAV.map((item) =>
+          item.children ? (
+            <li class="dd">
+              <a class:list={["hdr__link", { "ist-aktiv": aktiv(item.href) }]} href={item.href}>{item.label}</a>
+              <button class="dd__btn" type="button" aria-expanded="false" aria-label={`${item.label}: Untermenü öffnen`}>
+                <Icon name="chevron" size={16} class="icon dd__chev" />
+              </button>
+              <div class="dd__panel">
+                <ul>
+                  {item.children.map((c) => (
+                    <li>
+                      <a class="dd__item" href={c.href}>
+                        <span class="dd__icon"><Icon name={c.icon} size={22} /></span>
+                        <span><strong>{c.label}</strong><small>{c.desc}</small></span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </li>
+          ) : (
+            <li><a class:list={["hdr__link", { "ist-aktiv": aktiv(item.href) }]} href={item.href}>{item.label}</a></li>
+          )
+        )}
+      </ul>
+    </nav>
+
+    <div class="hdr__aktionen">
+      <a class="hdr__tel" href={telLink}>
+        <Icon name="phone" size={20} />
+        <span class="hdr__tel-text"><small>Rufen Sie uns an</small>{SITE.phoneDisplay}</span>
+      </a>
+      <a class="btn btn--klein hdr__cta" href={u("kontakt-anfahrt/#anfrage")}>Termin anfragen</a>
+      <button class="hdr__burger" type="button" aria-expanded="false" aria-controls="mobilmenue" aria-label="Menü öffnen">
+        <Icon name="menu" size={28} class="icon burger-auf" />
+        <Icon name="close" size={28} class="icon burger-zu" />
+      </button>
+    </div>
+  </div>
+
+  <div class="mm" id="mobilmenue">
+    <nav aria-label="Mobile Navigation">
+      <ul class="mm__liste">
+        {NAV.map((item) => (
+          <li>
+            <a class="mm__top" href={item.href}>{item.label}</a>
+            {item.children && (
+              <ul class="mm__sub">
+                {item.children.map((c) => (
+                  <li><a href={c.href}><Icon name={c.icon} size={20} /> {c.label}</a></li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <div class="mm__fuss">
+      <a class="btn" href={telLink}><Icon name="phone" /> {SITE.phoneDisplay}</a>
+      <p class="klein">Mo–Fr 8–17 Uhr · {SITE.street}, {SITE.zip} {SITE.city}</p>
+    </div>
+  </div>
+</header>
+
+<style>
+  .hdr {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--weiss);
+    border-bottom: 1px solid var(--s-200);
+    transition: box-shadow var(--t);
+  }
+  .hdr.ist-gescrollt { box-shadow: var(--shadow); }
+  .hdr::after { /* roter Lackstreifen an der Unterkante */
+    content: ""; position: absolute; left: 0; bottom: -1px; height: 3px; width: min(38vw, 420px);
+    background: var(--rot);
+    clip-path: polygon(0 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  }
+  .hdr__inner { display: flex; align-items: center; gap: 16px; height: var(--header-h); }
+  .hdr__logo { flex: none; display: flex; }
+  .hdr__logo img { height: 52px; width: auto; }
+
+  .hdr__nav { display: none; flex: 1; justify-content: center; }
+  .hdr__nav > ul { display: flex; align-items: center; gap: 2px; list-style: none; margin: 0; padding: 0; }
+  .hdr__link {
+    display: inline-flex; align-items: center;
+    padding: 10px 12px;
+    font-family: var(--font-head); font-weight: 700; font-size: 18px;
+    letter-spacing: .03em; text-transform: uppercase;
+    color: var(--s-950); text-decoration: none;
+    border-radius: var(--r-sm);
+  }
+  .hdr__link:hover, .hdr__link.ist-aktiv { color: var(--rot-dunkel); }
+  .dd { position: relative; display: flex; align-items: center; }
+  .dd .hdr__link { padding-right: 2px; }
+  .dd__btn { border: 0; background: none; padding: 10px 6px; color: var(--s-950); display: inline-flex; border-radius: var(--r-sm); }
+  .dd__btn :global(.dd__chev) { transition: transform var(--t); }
+  .dd:hover .dd__btn :global(.dd__chev), .dd.offen .dd__btn :global(.dd__chev) { transform: rotate(180deg); }
+  .dd__panel {
+    position: absolute; top: 100%; left: 50%;
+    transform: translate(-50%, 8px);
+    width: 380px;
+    background: var(--weiss);
+    border: 1px solid var(--s-200);
+    border-top: 3px solid var(--rot);
+    border-radius: 0 0 var(--r-lg) var(--r-lg);
+    box-shadow: var(--shadow-lg);
+    padding: 10px;
+    opacity: 0; visibility: hidden;
+    transition: opacity var(--t), transform var(--t), visibility var(--t);
+  }
+  .dd:hover .dd__panel, .dd:focus-within .dd__panel, .dd.offen .dd__panel { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+  .dd__panel ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+  .dd__item { display: flex; gap: 12px; align-items: center; padding: 10px; border-radius: var(--r); color: var(--s-950); text-decoration: none; }
+  .dd__item:hover { background: var(--s-50); color: var(--s-950); }
+  .dd__item strong { display: block; font-weight: 700; }
+  .dd__item small { display: block; color: var(--s-600); font-size: 14px; line-height: 1.35; }
+  .dd__icon { flex: none; width: 40px; height: 40px; border-radius: var(--r); background: var(--rot-hell); color: var(--rot-dunkel); display: grid; place-items: center; }
+
+  .hdr__aktionen { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+  .hdr__tel {
+    display: inline-flex; align-items: center; gap: 10px;
+    color: var(--s-950); text-decoration: none; font-weight: 700;
+    width: 44px; height: 44px; justify-content: center;
+    border-radius: 50%; background: var(--s-100);
+  }
+  .hdr__tel:hover { color: var(--rot-dunkel); }
+  .hdr__tel-text { display: none; line-height: 1.15; font-family: var(--font-head); font-size: 21px; letter-spacing: .02em; }
+  .hdr__tel-text small { display: block; font-family: var(--font-body); font-size: 13px; font-weight: 500; color: var(--s-600); letter-spacing: 0; }
+  .hdr__cta { display: none; white-space: nowrap; }
+  .hdr__burger { width: 44px; height: 44px; border: 0; background: none; color: var(--s-950); display: inline-flex; align-items: center; justify-content: center; border-radius: var(--r); }
+  .hdr__burger :global(.burger-zu) { display: none; }
+  .hdr__burger[aria-expanded="true"] :global(.burger-auf) { display: none; }
+  .hdr__burger[aria-expanded="true"] :global(.burger-zu) { display: block; }
+
+  @media (min-width: 1024px) {
+    .hdr__nav { display: flex; }
+    .hdr__burger { display: none; }
+    .hdr__cta { display: inline-flex; }
+    .hdr__logo img { height: 56px; }
+  }
+  @media (min-width: 1180px) {
+    .hdr__tel { width: auto; height: auto; background: none; border-radius: 0; }
+    .hdr__tel :global(.icon) { color: var(--rot); }
+    .hdr__tel-text { display: block; }
+  }
+
+  /* Mobilmenü */
+  .mm {
+    position: fixed; inset: var(--header-h) 0 0 0; z-index: 99;
+    background: var(--weiss);
+    overflow-y: auto; -webkit-overflow-scrolling: touch;
+    padding: 16px 16px calc(32px + env(safe-area-inset-bottom));
+    display: none; flex-direction: column; gap: 24px;
+  }
+  .mm.offen { display: flex; }
+  @media (min-width: 1024px) { .mm.offen { display: none; } }
+  .mm__liste, .mm__sub { list-style: none; margin: 0; padding: 0; }
+  .mm__top {
+    display: block; padding: 14px 4px;
+    font-family: var(--font-head); font-weight: 800; font-size: 24px; text-transform: uppercase;
+    color: var(--s-950); text-decoration: none;
+    border-bottom: 1px solid var(--s-200);
+  }
+  .mm__sub { padding: 6px 0 10px; }
+  .mm__sub a { display: flex; align-items: center; gap: 12px; padding: 11px 6px; color: var(--s-800); text-decoration: none; font-weight: 600; }
+  .mm__sub a :global(.icon) { color: var(--rot); }
+  .mm__fuss { margin-top: auto; display: grid; gap: 10px; text-align: center; }
+  .mm__fuss p { margin: 0 auto; }
+</style>
+
+<script>
+  const kopf = document.getElementById("kopf")!;
+  const onScroll = () => kopf.classList.toggle("ist-gescrollt", scrollY > 8);
+  addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  // Dropdown: Klick-Toggle, Escape, Klick außerhalb
+  kopf.querySelectorAll<HTMLElement>(".dd").forEach((dd) => {
+    const btn = dd.querySelector<HTMLButtonElement>(".dd__btn")!;
+    const setz = (auf: boolean) => { dd.classList.toggle("offen", auf); btn.setAttribute("aria-expanded", String(auf)); };
+    btn.addEventListener("click", () => setz(!dd.classList.contains("offen")));
+    dd.addEventListener("keydown", (e) => { if (e.key === "Escape") { setz(false); btn.focus(); } });
+    document.addEventListener("click", (e) => { if (!dd.contains(e.target as Node)) setz(false); });
+  });
+
+  // Mobilmenü
+  const burger = kopf.querySelector<HTMLButtonElement>(".hdr__burger")!;
+  const mm = document.getElementById("mobilmenue")!;
+  const setzMenue = (auf: boolean) => {
+    mm.classList.toggle("offen", auf);
+    burger.setAttribute("aria-expanded", String(auf));
+    burger.setAttribute("aria-label", auf ? "Menü schließen" : "Menü öffnen");
+    document.body.style.overflow = auf ? "hidden" : "";
+  };
+  burger.addEventListener("click", () => setzMenue(!mm.classList.contains("offen")));
+  mm.addEventListener("click", (e) => { if ((e.target as HTMLElement).closest("a")) setzMenue(false); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && mm.classList.contains("offen")) { setzMenue(false); burger.focus(); } });
+</script>

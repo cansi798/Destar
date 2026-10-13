@@ -1,0 +1,52 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import LeistungKarte from "../../components/LeistungKarte.astro";
+import Ablauf from "../../components/Ablauf.astro";
+import CtaBand from "../../components/CtaBand.astro";
+import { u } from "../../consts";
+import { ABLAUF } from "../../data/home";
+import pistole from "../../assets/img/lackierpistole-4x3.webp";
+
+const leistungen = (await getCollection("leistungen")).sort((a, b) => a.data.order - b.data.order);
+const crumbs = [{ name: "Leistungen", href: u("leistungen/") }];
+---
+
+<BaseLayout
+  title="Leistungen: Lack, Smart-Repair, Karosserie, Autoglas | Destar Lackdoktor"
+  description="Alle Leistungen von Destar Lackdoktor in Norderstedt: Smart-Repair, Lackierarbeiten, Karosseriearbeiten, Unfallservice sowie Autoglas- und Steinschlagreparatur."
+  crumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Leistungen"
+    titel="Alles rund um"
+    akzent="Lack & Karosserie"
+    lead="Wir begutachten Ihr Fahrzeug kostenlos – ganz gleich, ob Pkw oder Wohnmobil. Unser Angebot reicht von kostengünstigen Lackreparaturen über Smart-Repair bis zur professionellen Aufbereitung und kompletten Unfallabwicklung."
+    bild={pistole}
+    alt="Hand eines Lackierers mit Lackierpistole"
+    crumbs={crumbs}
+  />
+
+  <section class="section">
+    <div class="container">
+      <div class="grid g-3 gap-lg">
+        {leistungen.map((l, i) => (
+          <LeistungKarte href={u(`leistungen/${l.id}/`)} titel={l.data.kurz} text={l.data.teaser} icon={l.data.icon} bild={l.data.bild} alt={l.data.bildAlt} nr={i + 1} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--grau">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">So läuft es ab</p>
+        <h2>Schicht für Schicht <span class="spray akzent">zum Ergebnis</span></h2>
+      </div>
+      <Ablauf steps={ABLAUF} />
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>
