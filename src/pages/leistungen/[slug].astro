@@ -62,7 +62,7 @@ const serviceSchema = {
           <p class="eyebrow">Ihre Vorteile</p>
           <h2>{d.kurz} bei <span class="spray akzent">Destar</span></h2>
         </div>
-        <ul class="grid g-3 vt">
+        <ul class:list={["grid", d.vorteile.length === 2 ? "g-2" : "g-3", "vt"]}>{/* 2 Kacheln: zweispaltig, keine Lücke (16.10.2026) */}
           {d.vorteile.map((v) => (
             <li class="card reveal">
               <span class="vt__icon"><Icon name={v.icon} size={26} /></span>
