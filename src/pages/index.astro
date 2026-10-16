@@ -1,6 +1,11 @@
 ---
+// Startseite – Reihenfolge seit 16.10.2026 (Kundenwunsch: kunden-/serviceorientiert, wenig Text,
+// keine Doppelungen): Hero → Sorgen („Kennen Sie das?“) → So einfach geht's → Schwerpunkt
+// Wohnwagen & Wohnmobile → Leistungen (inkl. Aufbereitung) → FAQ → CTA → Standort.
+// Entfallen (Inhalte stehen jetzt an genau einer Stelle): Block „Schadenmanagement“ (→ Sorgen +
+// Unfallservice-Seite), „Warum Destar“-Kacheln (→ Hero-Haken, Sorgen, FAQ, Lackierarbeiten),
+// „Typische Schäden“ (→ Leistungskarten; Fotos im Hero bzw. auf der Karosserie-Seite).
 import { getCollection } from "astro:content";
-import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Hero from "../components/Hero.astro";
 import LeistungKarte from "../components/LeistungKarte.astro";
@@ -9,61 +14,38 @@ import Faq from "../components/Faq.astro";
 import CtaBand from "../components/CtaBand.astro";
 import Standort from "../components/Standort.astro";
 import Icon from "../components/Icon.astro";
-import { SITE, u, waLink } from "../consts";
-import { ABLAUF, FAQ, VORTEILE, faqSchema } from "../data/home";
-import kratzer from "../assets/img/schaden-kratzer.webp";
-import delle from "../assets/img/schaden-delle.webp";
-import pistole from "../assets/img/lackierpistole-4x3.webp";
+import WohnwagenGrafik from "../components/WohnwagenGrafik.astro";
+import { MELDEN, u, waLink } from "../consts";
+import { ABLAUF, FAQ, SORGEN, faqSchema } from "../data/home";
 
-const leistungen = (await getCollection("leistungen")).sort((a, b) => a.data.order - b.data.order);
+const alle = (await getCollection("leistungen")).sort((a, b) => a.data.order - b.data.order);
+const ww = alle.find((l) => l.id === "wohnwagen-lackierung")!;
+const leistungen = alle.filter((l) => l.id !== ww.id); // Wohnwagen hat einen eigenen Abschnitt
 ---
 
 <BaseLayout
-  title="Destar Lackdoktor – Autolackiererei & Smart-Repair in Norderstedt"
-  description="Meisterbetrieb in Norderstedt: Lackreparatur, Smart-Repair, Karosserie, Autoglas und Unfallservice mit kompletter Schadensabwicklung. Kostenlose Begutachtung."
+  title="Destar Lackdoktor – Unfallservice, Lack & Smart-Repair in Norderstedt"
+  description="Meisterbetrieb in Norderstedt: Schaden online melden – wir übernehmen Gutachten, Kalkulation und Versicherung. Lack, Smart-Repair, Karosserie, Autoglas, Wohnwagen."
   schema={[faqSchema(FAQ)]}
 >
   <Hero />
 
-  <!-- Leistungen -->
-  <section class="section" id="leistungen" aria-labelledby="l-titel">
+  <!-- Sorgen der Kunden → was wir übernehmen -->
+  <section class="section section--dark metallic" aria-labelledby="k-titel">
     <div class="container">
-      <div class="section-head">
-        <p class="eyebrow">Unsere Leistungen</p>
-        <h2 id="l-titel">Vom Kratzer bis zum <span class="spray akzent">Unfallschaden</span></h2>
-        <p>Von der kostengünstigen Lackreparatur über Smart-Repair bis zur professionellen Aufbereitung – alles in unserer Werkstatt in Norderstedt.</p>
+      <div class="section-head section-head--center">
+        <p class="eyebrow">Kennen Sie das?</p>
+        <h2 id="k-titel">Schaden am Auto – <span class="spray akzent">und jetzt?</span></h2>
       </div>
-      <div class="grid g-3 gap-lg">
-        {leistungen.map((l, i) => (
-          <LeistungKarte href={u(`leistungen/${l.id}/`)} titel={l.data.kurz} text={l.data.teaser} icon={l.data.icon} bild={l.data.bild} alt={l.data.bildAlt} nr={i + 1} />
+      <ul class="sorgen">
+        {SORGEN.map((s) => (
+          <li class="sorge glanz reveal">
+            <span class="sorge__icon"><Icon name={s.icon} size={26} /></span>
+            <h3>{s.sorge}</h3>
+            <p><Icon name="check" size={18} /> <span>{s.loesung}</span></p>
+          </li>
         ))}
-        <a class="extra glanz reveal" href="#aufbereitung">
-          <span class="extra__icon"><Icon name="drop" size={30} /></span>
-          <h3>Aufbereitung & Leasing-Rückgabe</h3>
-          <p>Fahrzeug zurückgeben oder verkaufen? Mit einer fachgerechten Aufbereitung übergeben Sie es sorgenfrei.</p>
-          <span class="extra__mehr">Mehr erfahren <Icon name="arrow" size={18} /></span>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Schadensfall + Aufbereitung -->
-  <section class="section section--grau" aria-labelledby="s-titel">
-    <div class="container zwei">
-      <div class="zwei__bild bild-spray reveal" style="--sx: 40%; --sy: 50%">
-        <Image src={pistole} alt="Hand eines Lackierers mit Lackierpistole" widths={[480, 640]} sizes="(min-width: 1024px) 520px, 92vw" />
-      </div>
-      <div>
-        <p class="eyebrow">Schadenmanagement</p>
-        <h2 id="s-titel">Im Schadensfall Ihr <span class="spray akzent">Partner</span></h2>
-        <p>Egal ob Unfall, Sturm oder andere Einflüsse: Wir übernehmen die komplette Schadensabwicklung – inklusive Kommunikation mit der Versicherung, Gutachten, Kalkulation und allen nötigen Schritten.</p>
-        <p>Dank freier Werkstattwahl im Haftpflichtfall setzen wir uns für Ihre Rechte und Leistungen ein – fair, engagiert und in Ihrem Sinne.</p>
-        <div id="aufbereitung" class="aufb">
-          <h3>Aufbereitung vor Leasing-Rückgabe oder Verkauf</h3>
-          <p>Sie geben ein Leasingfahrzeug zurück? Rechtzeitig vor Ende der Vertragslaufzeit bereiten wir es gezielt für die Rückgabe auf, damit Sie es sorgenfrei an die Leasinggesellschaft übergeben können. Auch vor einem geplanten Verkauf kann eine fachgerechte Aufbereitung den Fahrzeugwert deutlich steigern.</p>
-        </div>
-        <a class="btn" href={u("leistungen/unfallservice/")}>Zum Unfallservice <Icon name="arrow" size={20} /></a>
-      </div>
+      </ul>
     </div>
   </section>
 
@@ -71,56 +53,58 @@ const leistungen = (await getCollection("leistungen")).sort((a, b) => a.data.ord
   <section class="section" id="ablauf" aria-labelledby="a-titel">
     <div class="container">
       <div class="section-head">
-        <p class="eyebrow">So läuft es ab</p>
-        <h2 id="a-titel">Schicht für Schicht <span class="spray akzent">zum Ergebnis</span></h2>
-        <p>Vom ersten Anruf bis zur fertigen Lackierung – transparent und ohne Umwege.</p>
+        <p class="eyebrow">So einfach geht's</p>
+        <h2 id="a-titel">Drei Schritte – <span class="spray akzent">wir machen den Rest</span></h2>
       </div>
       <Ablauf steps={ABLAUF} />
-    </div>
-  </section>
-
-  <!-- Vorteile -->
-  <section class="section section--dark metallic" aria-labelledby="v-titel">
-    <div class="container">
-      <div class="section-head section-head--center">
-        <p class="eyebrow">Warum Destar Lackdoktor</p>
-        <h2 id="v-titel">Professionell, transparent, <span class="spray akzent">zuverlässig</span></h2>
+      <div class="ablauf-cta">
+        <a class="btn glanz" href={MELDEN.href}><Icon name="doc" size={22} /> Jetzt {MELDEN.label}</a>
       </div>
-      <ul class="vorteile">
-        {VORTEILE.map((v) => (
-          <li class="reveal">
-            <span class="vorteile__icon"><Icon name={v.icon} size={26} /></span>
-            <h3>{v.title}</h3>
-            <p>{v.text}</p>
-          </li>
-        ))}
-      </ul>
     </div>
   </section>
 
-  <!-- Typische Schäden (echte Fotos von der bisherigen Website) -->
-  <section class="section" aria-labelledby="b-titel">
+  <!-- Schwerpunkt Wohnwagen & Wohnmobile -->
+  <section class="section section--grau" id="wohnwagen" aria-labelledby="w-titel">
+    <div class="container ww-teaser">
+      <div class="ww-teaser__bild metallic">
+        <WohnwagenGrafik />
+        <span class="ww-teaser__marke">Unser Schwerpunkt</span>
+      </div>
+      <div>
+        <p class="eyebrow">Spezialisiert</p>
+        <h2 id="w-titel">Wohnwagen & <span class="spray akzent">Wohnmobile</span></h2>
+        <p class="ww-teaser__problem">{ww.data.problem}</p>
+        <p>{ww.data.lead}</p>
+        <ul class="haken">{ww.data.punkte.map((p) => <li>{p}</li>)}</ul>
+        <div class="btn-reihe">
+          <a class="btn glanz" href={u("schaden-melden/?fahrzeug=wohnwagen")}><Icon name="doc" size={22} /> {MELDEN.label}</a>
+          <a class="btn btn--rahmen" href={u(`leistungen/${ww.id}/`)}>Mehr erfahren <Icon name="arrow" size={20} /></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Leistungen -->
+  <section class="section" id="leistungen" aria-labelledby="l-titel">
     <div class="container">
       <div class="section-head">
-        <p class="eyebrow">Aus dem Werkstattalltag</p>
-        <h2 id="b-titel">Typische Schäden, die wir <span class="spray akzent">beheben</span></h2>
-        <p>Schrammen am Stoßfänger, Dellen im Blech: Solche Schäden sehen wir täglich – und finden die passende Reparatur, von Smart-Repair bis zur Lackierung.</p>
+        <p class="eyebrow">Ihr Problem – unsere Lösung</p>
+        <h2 id="l-titel">Vom Kratzer bis zum <span class="spray akzent">Unfallschaden</span></h2>
       </div>
-      <div class="grid g-2 gap-lg">
-        <figure class="schaden reveal">
-          <div class="bild"><Image src={kratzer} alt="Kratzer und Schrammen am vorderen Stoßfänger eines silbernen Pkw" widths={[444]} sizes="(min-width: 640px) 46vw, 92vw" /></div>
-          <figcaption><strong>Lackschaden am Stoßfänger</strong> – ein typischer Fall für <a href={u("leistungen/lackierarbeiten/")}>Lackreparatur</a> oder <a href={u("leistungen/smart-repair/")}>Spot-Repair</a>.</figcaption>
-        </figure>
-        <figure class="schaden reveal">
-          <div class="bild"><Image src={delle} alt="Delle im hellen Karosserieblech eines Fahrzeugs" widths={[444]} sizes="(min-width: 640px) 46vw, 92vw" /></div>
-          <figcaption><strong>Delle im Blech</strong> – je nach Schaden per <a href={u("leistungen/smart-repair/")}>Ausbeulen ohne Lackschaden</a> oder <a href={u("leistungen/karosseriearbeiten/")}>Karosserie-Instandsetzung</a>.</figcaption>
-        </figure>
+      <div class="grid g-3 gap-lg">
+        {leistungen.map((l) => (
+          <LeistungKarte href={u(`leistungen/${l.id}/`)} problem={l.data.problem} titel={l.data.kurz} text={l.data.teaser} icon={l.data.icon} bild={l.data.bild} alt={l.data.bildAlt} nr={l.data.order} />
+        ))}
+        <div class="extra glanz reveal" id="aufbereitung">
+          <span class="extra__icon"><Icon name="drop" size={30} /></span>
+          <p class="extra__problem">Leasing-Rückgabe oder Verkauf steht an?</p>
+          <h3>Aufbereitung</h3>
+          <p>Rechtzeitig vor Vertragsende bereiten wir Ihr Fahrzeug gezielt auf – für eine sorgenfreie Übergabe an die Leasinggesellschaft. Vor einem Verkauf kann eine fachgerechte Aufbereitung den Fahrzeugwert deutlich steigern.</p>
+          <a class="extra__mehr" href={waLink("Hallo Destar Lackdoktor, ich interessiere mich für eine Aufbereitung meines Fahrzeugs (Leasing-Rückgabe/Verkauf).")} target="_blank" rel="noopener">Per WhatsApp anfragen <Icon name="arrow" size={18} /></a>
+        </div>
       </div>
-      <p class="insta"><Icon name="instagram" size={22} /> Weitere Einblicke in unsere Arbeit: <a href={SITE.instagram} target="_blank" rel="noopener">@destar_lackdoktor auf Instagram</a></p>
     </div>
   </section>
-
-  <CtaBand />
 
   <!-- FAQ -->
   <section class="section section--grau" id="faq" aria-labelledby="f-titel">
@@ -134,13 +118,15 @@ const leistungen = (await getCollection("leistungen")).sort((a, b) => a.data.ord
     </div>
   </section>
 
+  <CtaBand />
+
   <!-- Standort -->
   <section class="section" id="standort" aria-labelledby="o-titel">
     <div class="container">
       <div class="section-head">
         <p class="eyebrow">Standort</p>
         <h2 id="o-titel">Ihre Werkstatt in <span class="spray akzent">Norderstedt</span></h2>
-        <p>Sie finden uns im Distelweg 33-35 in Norderstedt, direkt an der Hamburger Stadtgrenze. Am besten vereinbaren Sie vorab kurz einen Termin.</p>
+        <p>Direkt an der Hamburger Stadtgrenze. Am besten melden Sie sich vorab kurz an.</p>
       </div>
       <Standort />
     </div>
@@ -148,40 +134,49 @@ const leistungen = (await getCollection("leistungen")).sort((a, b) => a.data.ord
 </BaseLayout>
 
 <style>
+  /* Sorgen-Karten (dunkel, Lack-Glanz beim Erscheinen) */
+  .sorgen { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+  @media (min-width: 640px) { .sorgen { grid-template-columns: repeat(2, 1fr); gap: 20px; } }
+  @media (min-width: 1100px) { .sorgen { grid-template-columns: repeat(4, 1fr); } }
+  .sorge {
+    padding: 24px 22px; border-radius: var(--r-lg);
+    background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1);
+    border-top: 3px solid var(--rot);
+  }
+  .sorge__icon { display: inline-grid; place-items: center; width: 50px; height: 50px; border-radius: 12px; margin-bottom: 14px; color: var(--weiss); background: linear-gradient(135deg, #e0412c, var(--rot-dunkel)); box-shadow: inset 0 1px 0 rgba(255,255,255,.35); }
+  .sorge h3 { font-size: 22px; margin-bottom: 10px; }
+  .sorge p { display: flex; gap: 8px; margin: 0; color: var(--s-200); font-size: 16px; }
+  .sorge p :global(.icon) { flex: none; margin-top: 3px; color: var(--rot-auf-dunkel); stroke-width: 3; }
+
+  .ablauf-cta { margin-top: 40px; }
+
+  /* Wohnwagen-Schwerpunkt */
+  .ww-teaser { display: grid; gap: 36px; align-items: center; }
+  @media (min-width: 1024px) { .ww-teaser { grid-template-columns: 1fr 1fr; gap: 64px; } }
+  .ww-teaser__bild { position: relative; border-radius: var(--r-lg); padding: 12% 10% 8%; box-shadow: var(--shadow-lg); overflow: hidden; }
+  .ww-teaser__marke {
+    position: absolute; top: 18px; left: 0; padding: 6px 16px 6px 14px;
+    background: var(--rot); color: var(--weiss);
+    font-family: var(--font-head); font-weight: 700; font-size: 16px; letter-spacing: .1em; text-transform: uppercase;
+    clip-path: polygon(0 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  }
+  .ww-teaser__problem { font-family: var(--font-head); font-weight: 700; font-style: italic; font-size: 24px; line-height: 1.2; color: var(--rot-dunkel); margin-bottom: 10px; }
+  .ww-teaser .haken { margin: 18px 0 26px; }
+
   .extra {
     display: flex; flex-direction: column; gap: 6px;
     padding: 28px; border-radius: 6px 6px var(--r-lg) var(--r-lg);
-    background: var(--s-950); color: var(--s-300); text-decoration: none;
+    background: var(--s-950); color: var(--s-300);
     box-shadow: var(--shadow-sm);
     background-image: radial-gradient(90% 70% at 100% 0%, rgba(200,32,14,.45), transparent 60%);
-    transition: transform var(--t), box-shadow var(--t);
+    scroll-margin-top: calc(var(--header-h) + 24px);
   }
-  .extra:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); color: var(--s-300); }
-  .extra h3 { color: var(--weiss); margin-top: 12px; }
-  .extra p { flex: 1; font-size: 16px; }
+  .extra h3 { color: var(--weiss); }
+  .extra p { flex: 1; font-size: 16px; margin: 0; }
+  .extra .extra__problem { flex: none; margin-top: 12px; font-weight: 700; font-style: italic; color: var(--rot-auf-dunkel); }
   .extra__icon { width: 58px; height: 58px; border-radius: 50%; background: var(--rot); color: var(--weiss); display: grid; place-items: center; }
-  .extra__mehr { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; color: var(--weiss); }
+  .extra__mehr { display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; font-weight: 700; color: var(--weiss); }
+  .extra__mehr:hover { color: var(--weiss); }
 
-  .zwei { display: grid; gap: 40px; align-items: center; }
-  @media (min-width: 1024px) { .zwei { grid-template-columns: .9fr 1.1fr; gap: 64px; } }
-  .zwei__bild { border-radius: var(--r-lg); overflow: hidden; aspect-ratio: 4 / 3; box-shadow: var(--shadow-lg); }
-  .zwei__bild :global(img) { width: 100%; height: 100%; object-fit: cover; }
-  .aufb { margin: 28px 0; padding: 20px 22px; background: var(--weiss); border-left: 4px solid var(--rot); border-radius: 0 var(--r) var(--r) 0; box-shadow: var(--shadow-sm); scroll-margin-top: calc(var(--header-h) + 24px); }
-  .aufb h3 { font-size: 22px; }
-  .aufb p { margin: 0; }
-
-  .vorteile { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; background: rgba(255,255,255,.08); border-radius: var(--r-lg); overflow: hidden; }
-  @media (min-width: 640px) { .vorteile { grid-template-columns: repeat(2, 1fr); } }
-  @media (min-width: 1024px) { .vorteile { grid-template-columns: repeat(3, 1fr); } }
-  .vorteile li { padding: 30px 26px; background: rgba(17,17,19,.86); }
-  .vorteile__icon { display: inline-grid; place-items: center; width: 52px; height: 52px; border-radius: 12px; margin-bottom: 14px; color: var(--weiss); background: linear-gradient(135deg, #e0412c, var(--rot-dunkel)); box-shadow: inset 0 1px 0 rgba(255,255,255,.35); }
-  .vorteile h3 { margin-bottom: 6px; }
-  .vorteile p { margin: 0; color: var(--s-300); font-size: 16px; }
-
-  .schaden { margin: 0; }
-  .schaden .bild { aspect-ratio: 4 / 3; }
-  .schaden figcaption { margin-top: 12px; color: var(--s-700); }
-  .insta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 32px; font-weight: 600; }
-  .insta :global(.icon) { color: var(--rot); }
   .faq-mehr { margin: 28px auto 0; }
 </style>

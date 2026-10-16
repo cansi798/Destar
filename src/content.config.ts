@@ -12,11 +12,12 @@ const leistungen = defineCollection({
       kurz: z.string(),             // Name in Karten/Menü
       order: z.number(),
       icon: z.string(),
-      teaser: z.string(),           // Kurztext für Karten
+      problem: z.string(),          // Kundenproblem als kurze Frage (Karten + Seitenkopf)
+      teaser: z.string(),           // Lösung in 1 Satz (Karten)
       lead: z.string(),             // Einleitung im Seitenkopf
       beschreibung: z.string(),     // Meta-Description (≤ 160 Zeichen)
-      bild: image(),
-      bildAlt: z.string(),
+      bild: image().optional(),     // ohne Bild: gezeichnete Illustration (z. B. Wohnwagen)
+      bildAlt: z.string().default(""),
       bildEcht: z.boolean().default(false), // true = Foto aus dem Betrieb, false = Stimmungsbild
       punkteTitel: z.string(),
       punkte: z.array(z.string()),

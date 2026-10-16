@@ -8,9 +8,9 @@ export const GET: APIRoute = async ({ site }) => {
   const txt = `# ${SITE.legal}
 
 > Autolackiererei und Meisterbetrieb in Norderstedt (Schleswig-Holstein, an der Hamburger
-> Stadtgrenze): Lackreparatur, Smart-Repair, Karosseriearbeiten, Unfallservice mit kompletter
-> Schadensabwicklung sowie Autoglas- und Steinschlagreparatur. Kostenlose Begutachtung für Pkw
-> und Wohnmobile.
+> Stadtgrenze): Unfallservice mit kompletter Schadensabwicklung (inkl. Versicherung), Lackreparatur,
+> Smart-Repair, Karosseriearbeiten, Autoglas- und Steinschlagreparatur; Schwerpunkt Wohnwagen und
+> Wohnmobile. Kostenlose Begutachtung. Schaden online melden: ${o}schaden-melden/
 
 ## Leistungen
 
@@ -20,6 +20,7 @@ ${l.map((x) => `- [${x.data.kurz}](${o}leistungen/${x.id}/): ${x.data.teaser}`).
 ## Fakten
 
 - Kostenlose Begutachtung (Pkw und Wohnmobil)
+- Spezialisiert auf Lackierung und Lackreparatur von Wohnwagen und Wohnmobilen
 - Komplette Schadensabwicklung: Kommunikation mit der Versicherung, Gutachten, Kalkulation
 - Freie Werkstattwahl im Haftpflichtfall; Ersatzfahrzeug während der Unfallreparatur
 - Computergestützte Farbtonmessung, moderne Lackierkabinen
@@ -30,6 +31,7 @@ ${l.map((x) => `- [${x.data.kurz}](${o}leistungen/${x.id}/): ${x.data.teaser}`).
 - Telefon/WhatsApp: ${SITE.phoneTel}
 - E-Mail: ${SITE.email}
 - Öffnungszeiten: ${HOURS_SHORT}, Sa/So geschlossen
+- Schaden melden (Formular, Versand per WhatsApp oder E-Mail): ${o}schaden-melden/
 - Kontaktseite: ${o}kontakt-anfahrt/
 - Instagram: ${SITE.instagram}
 `;

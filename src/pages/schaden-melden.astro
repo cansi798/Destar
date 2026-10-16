@@ -1,0 +1,489 @@
+---
+// Schaden melden (Kundenwunsch 16.10.2026): geführtes Formular in 3 Schritten, mobil zuerst.
+// KEIN Server-Backend (statisches Hosting): Die Angaben werden zu einer fertigen Nachricht
+// zusammengesetzt, die der Kunde selbst per WhatsApp (wa.me, Fotos dort anhängen) oder per
+// E-Mail (mailto) absendet. Über die Website werden keine Daten übertragen oder gespeichert.
+// Ohne JavaScript: alle Felder in einem Formular, Absenden per E-Mail (mailto, wie Kontaktseite).
+// Vorauswahl per URL: ?art=unfall|kratzer|delle|glas|sonstiges, ?fahrzeug=wohnwagen
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import Icon from "../components/Icon.astro";
+import { SITE, telLink, u, waLink } from "../consts";
+
+const crumbs = [{ name: "Schaden melden", href: u("schaden-melden/") }];
+const arten = [
+  { key: "unfall", wert: "Unfall", icon: "unfall" },
+  { key: "kratzer", wert: "Parkschaden / Kratzer", icon: "kratzer" },
+  { key: "delle", wert: "Delle / Hagel", icon: "hagel" },
+  { key: "glas", wert: "Steinschlag / Glas", icon: "glass" },
+  { key: "sonstiges", wert: "Sonstiges", icon: "dots" },
+];
+const zahler = [
+  { key: "gegner", wert: "Unfallgegner bzw. dessen Haftpflichtversicherung", titel: "Der Unfallgegner", zusatz: "bzw. dessen Haftpflicht", icon: "personen" },
+  { key: "kasko", wert: "Eigene Kaskoversicherung", titel: "Meine Kasko", zusatz: "eigene Versicherung", icon: "shield" },
+  { key: "selbst", wert: "Ich zahle selbst", titel: "Ich zahle selbst", zusatz: "ohne Versicherung", icon: "euro" },
+  { key: "unklar", wert: "Weiß ich noch nicht", titel: "Weiß ich noch nicht", zusatz: "klären wir gemeinsam", icon: "frage" },
+];
+const schritte = ["Schaden", "Wer zahlt?", "Kontakt"];
+---
+
+<BaseLayout
+  title="Schaden melden | Destar Lackdoktor Norderstedt"
+  description="Schaden in drei kurzen Schritten melden – per WhatsApp oder E-Mail, Fotos einfach anhängen. Destar Lackdoktor kümmert sich um Gutachten, Kalkulation und Versicherung."
+  crumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Schaden melden"
+    titel="Schaden melden –"
+    akzent="wir regeln den Rest"
+    lead="Drei kurze Schritte, keine Anmeldung. Fotos? Einfach im WhatsApp-Chat anhängen."
+    crumbs={crumbs}
+    buttons={false}
+  />
+
+  <section class="section sm-section">
+    <div class="container sm-grid">
+      <form
+        class="sm card"
+        id="sm"
+        action={`mailto:${SITE.email}`}
+        method="post"
+        enctype="text/plain"
+        data-wa={SITE.whatsapp}
+        data-mail={SITE.email}
+        aria-label="Schadenmeldung"
+      >
+        <!-- Fortschritt (nur mit JS) -->
+        <div class="sm-fortschritt">
+          <p class="sm-fortschritt__text" id="sm-stand" aria-live="polite">Schritt 1 von 3: {schritte[0]}</p>
+          <ol class="sm-fortschritt__liste" aria-hidden="true">
+            {schritte.map((s, i) => (<li class:list={[{ "ist-aktiv": i === 0 }]}><span>{i + 1}</span>{s}</li>))}
+          </ol>
+          <div class="sm-fortschritt__bahn" aria-hidden="true"><span></span></div>
+        </div>
+
+        <!-- Schritt 1 -->
+        <div class="sm-schritt ist-aktiv" data-schritt="0">
+          <fieldset class="sm-gruppe" aria-describedby="f-art">
+            <legend><h2 class="sm-titel" tabindex="-1"><span class="sm-nr" aria-hidden="true">1</span> <span>Was ist passiert? <span class="sm-pflicht" aria-hidden="true">*</span></span></h2></legend>
+            <div class="wahlen wahlen--art">
+              {arten.map((a) => (
+                <label class="wahl">
+                  <input type="radio" name="Schadenart" value={a.wert} data-key={a.key} required />
+                  <span class="wahl__box"><Icon name={a.icon} size={30} /><span>{a.wert}</span></span>
+                </label>
+              ))}
+            </div>
+            <p class="sm-fehler" id="f-art"></p>
+          </fieldset>
+          <label class="feld">Kurze Beschreibung <small>(optional)</small>
+            <textarea name="Beschreibung" rows="3" maxlength="1000" placeholder="z. B. Beim Ausparken hinten links touchiert"></textarea>
+          </label>
+          <label class="feld">Fahrzeug / Kennzeichen <small>(optional)</small>
+            <input name="Fahrzeug" autocomplete="off" placeholder="z. B. VW Golf, SE-AB 123" />
+          </label>
+          <div class="sm-nav">
+            <button class="btn sm-weiter" type="button">Weiter <Icon name="arrow" size={20} /></button>
+          </div>
+        </div>
+
+        <!-- Schritt 2 -->
+        <div class="sm-schritt" data-schritt="1">
+          <fieldset class="sm-gruppe" aria-describedby="f-zahler-hinweis f-zahler">
+            <legend><h2 class="sm-titel" tabindex="-1"><span class="sm-nr" aria-hidden="true">2</span> <span>Wer zahlt den Schaden? <span class="sm-pflicht" aria-hidden="true">*</span></span></h2></legend>
+            <p class="sm-hinweis" id="f-zahler-hinweis">Unsicher? Kein Problem – das klären wir gemeinsam.</p>
+            <div class="wahlen wahlen--zahler">
+              {zahler.map((z) => (
+                <label class="wahl">
+                  <input type="radio" name="Wer zahlt" value={z.wert} data-key={z.key} required />
+                  <span class="wahl__box"><Icon name={z.icon} size={28} /><span><strong>{z.titel}</strong><small>{z.zusatz}</small></span></span>
+                </label>
+              ))}
+            </div>
+            <p class="sm-fehler" id="f-zahler"></p>
+          </fieldset>
+          <div class="sm-versicherung">
+            <div class="feld-reihe">
+              <label class="feld">Versicherung <small>(optional)</small>
+                <input name="Versicherung" autocomplete="off" placeholder="Name der Versicherung" />
+              </label>
+              <label class="feld">Schadennummer <small>(optional)</small>
+                <input name="Schadennummer" autocomplete="off" placeholder="falls schon vorhanden" />
+              </label>
+            </div>
+          </div>
+          <div class="sm-nav">
+            <button class="btn btn--rahmen sm-zurueck" type="button"><Icon name="arrow" size={20} class="icon icon--links" /> Zurück</button>
+            <button class="btn sm-weiter" type="button">Weiter <Icon name="arrow" size={20} /></button>
+          </div>
+        </div>
+
+        <!-- Schritt 3 -->
+        <div class="sm-schritt" data-schritt="2">
+          <h2 class="sm-titel" tabindex="-1"><span class="sm-nr" aria-hidden="true">3</span> <span>Wie erreichen wir Sie?</span></h2>
+          <div class="feld-reihe">
+            <div class="feld-wrap">
+              <label class="feld">Name <span class="sm-pflicht">*</span>
+                <input name="Name" autocomplete="name" required aria-describedby="f-name" />
+              </label>
+              <p class="sm-fehler" id="f-name"></p>
+            </div>
+            <div class="feld-wrap">
+              <label class="feld">Telefon <span class="sm-pflicht">*</span>
+                <input name="Telefon" type="tel" autocomplete="tel" inputmode="tel" required aria-describedby="f-tel" />
+              </label>
+              <p class="sm-fehler" id="f-tel"></p>
+            </div>
+          </div>
+          <div class="feld-wrap">
+            <label class="feld">E-Mail <small>(optional)</small>
+              <input name="E-Mail" type="email" autocomplete="email" aria-describedby="f-mail" />
+            </label>
+            <p class="sm-fehler" id="f-mail"></p>
+          </div>
+          <label class="check">
+            <input type="checkbox" name="Rückruf" value="Ja, bitte zurückrufen" />
+            <span>Bitte rufen Sie mich zurück</span>
+          </label>
+          <label class="feld sm-zeit ist-zu">Wann passt es Ihnen? <small>(optional)</small>
+            <input name="Rückruf-Zeit" autocomplete="off" placeholder="z. B. heute ab 16 Uhr" />
+          </label>
+          <label class="check">
+            <input type="checkbox" name="Datenschutz" value="akzeptiert" required aria-describedby="f-ds" />
+            <span>Ich bin einverstanden, dass meine Angaben zur Bearbeitung meiner Schadenmeldung verwendet werden. Mehr in der <a href={u("datenschutz/")}>Datenschutzerklärung</a>. <span class="sm-pflicht">*</span></span>
+          </label>
+          <p class="sm-fehler" id="f-ds"></p>
+
+          <details class="sm-vorschau">
+            <summary>Vorschau Ihrer Nachricht</summary>
+            <pre id="sm-text"></pre>
+          </details>
+
+          <div class="sm-senden">
+            <p class="sm-foto"><Icon name="camera" size={22} /> <span><strong>Fotos?</strong> Einfach im WhatsApp-Chat anhängen.</span></p>
+            <a class="btn btn--wa glanz" id="sm-wa" href={waLink("Hallo Destar Lackdoktor, ich möchte einen Schaden melden.")} target="_blank" rel="noopener"><Icon name="whatsapp" size={22} /> Per WhatsApp senden</a>
+            <a class="btn btn--glas sm-js" id="sm-mail" href={`mailto:${SITE.email}`}><Icon name="mail" size={22} /> Per E-Mail senden</a>
+            <button class="btn btn--glas sm-nojs" type="submit"><Icon name="mail" size={22} /> Per E-Mail senden</button>
+            <p class="klein sm-senden__info">Ihre Meldung öffnet sich fertig ausgefüllt in WhatsApp bzw. Ihrem E-Mail-Programm – dort nur noch auf „Senden“ tippen.</p>
+            <noscript><p class="klein">Hinweis: Ohne JavaScript öffnet „Per WhatsApp senden“ nur einen Chat ohne Ihre Angaben. Senden Sie das Formular dann bitte per E-Mail.</p></noscript>
+          </div>
+          <div class="sm-nav">
+            <button class="btn btn--rahmen sm-zurueck" type="button"><Icon name="arrow" size={20} class="icon icon--links" /> Zurück</button>
+          </div>
+        </div>
+
+        <p class="sm-alarm" id="sm-alarm" role="alert"></p>
+        <p class="sm-status" id="sm-status" role="status" aria-live="polite"></p>
+      </form>
+
+      <aside class="sm-hilfe" aria-label="Weitere Kontaktwege">
+        <div class="card">
+          <h2 class="sm-hilfe__titel">Lieber direkt?</h2>
+          <ul class="sm-hilfe__wege">
+            <li><a href={telLink}><Icon name="phone" size={22} /> {SITE.phoneDisplay}</a></li>
+            <li><a href={waLink()} target="_blank" rel="noopener"><Icon name="whatsapp" size={22} /> WhatsApp schreiben</a></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h2 class="sm-hilfe__titel">Und danach?</h2>
+          <p>Wir melden uns bei Ihnen und übernehmen alles Weitere. Sie bringen nur Ihr Auto.</p>
+          <a href={u("#ablauf")}>So läuft es ab <Icon name="arrow" size={18} /></a>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .sm-section { padding-top: 40px; }
+  @media (min-width: 768px) { .sm-section { padding-top: 64px; } }
+  .sm-grid { display: grid; gap: 24px; align-items: start; }
+  @media (min-width: 1024px) { .sm-grid { grid-template-columns: minmax(0, 1fr) 320px; gap: 40px; } }
+  .sm { display: grid; gap: 18px; padding: 22px 18px; box-shadow: var(--shadow); scroll-margin-top: calc(var(--header-h) + 12px); }
+  @media (min-width: 640px) { .sm { padding: 32px; } }
+
+  /* Fortschritt: Lackstreifen füllt sich Schritt für Schritt */
+  .sm-fortschritt { display: none; }
+  :global(html.js) .sm-fortschritt { display: grid; gap: 10px; }
+  .sm-fortschritt__text { margin: 0; font-weight: 700; font-size: 15px; color: var(--s-600); }
+  .sm-fortschritt__liste { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, auto); justify-content: space-between; gap: 8px; white-space: nowrap; }
+  .sm-fortschritt__liste li { display: flex; align-items: center; gap: 8px; font-family: var(--font-head); font-weight: 700; font-size: 16px; text-transform: uppercase; letter-spacing: .03em; color: var(--s-400); }
+  .sm-fortschritt__liste span { flex: none; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--s-300); font-size: 15px; transition: background var(--t), border-color var(--t), color var(--t); }
+  .sm-fortschritt__liste li.ist-aktiv { color: var(--s-950); }
+  .sm-fortschritt__liste li.ist-aktiv span, .sm-fortschritt__liste li.ist-fertig span { background: var(--rot); border-color: var(--rot); color: var(--weiss); }
+  .sm-fortschritt__liste li.ist-fertig { color: var(--s-700); }
+  .sm-fortschritt__bahn { height: 8px; border-radius: 8px; background: var(--s-100); overflow: hidden; }
+  .sm-fortschritt__bahn span {
+    display: block; height: 100%; width: 33.4%; border-radius: inherit;
+    background: linear-gradient(90deg, var(--rot-dunkel), var(--rot) 70%, #ff8a78 88%, #fff 94%, var(--rot));
+    transition: width .5s cubic-bezier(.5,.1,.2,1);
+  }
+  @media (max-width: 420px) { .sm-fortschritt__liste li { font-size: 14px; gap: 5px; } .sm-fortschritt__liste span { width: 24px; height: 24px; font-size: 13px; } }
+
+  /* Schritte: mit JS ist nur der aktive sichtbar */
+  .sm-schritt { display: grid; gap: 16px; }
+  :global(html.js) .sm-schritt:not(.ist-aktiv) { display: none; }
+  :global(html.js) .sm-schritt.ist-aktiv { animation: sm-rein .3s ease both; }
+  @keyframes sm-rein { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: none; } }
+  :global(html:not(.js)) .sm-schritt + .sm-schritt { border-top: 1px solid var(--s-200); padding-top: 22px; }
+
+  .sm-gruppe { border: 0; margin: 0; padding: 0; min-width: 0; display: grid; gap: 12px; }
+  .sm-gruppe legend { padding: 0; margin-bottom: 12px; }
+  .sm-titel { display: flex; align-items: center; gap: 12px; font-size: clamp(26px, 4vw, 34px); margin: 0; }
+  .sm-titel:focus { outline: none; }
+  .sm-titel:focus-visible { outline: 3px solid var(--rot); outline-offset: 4px; }
+  .sm-nr { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--rot); color: var(--weiss); font-size: 22px; font-style: italic; }
+  .sm-pflicht { color: var(--rot-dunkel); }
+  .sm-hinweis { margin: -6px 0 2px; color: var(--s-600); }
+
+  /* Große Auswahl-Kacheln */
+  .wahlen { display: grid; gap: 10px; grid-template-columns: repeat(2, 1fr); }
+  .wahlen--art .wahl:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  @media (min-width: 640px) {
+    .wahlen--art { grid-template-columns: repeat(5, 1fr); }
+    .wahlen--art .wahl:last-child:nth-child(odd) { grid-column: auto; }
+  }
+  .wahlen--zahler { grid-template-columns: 1fr; }
+  @media (min-width: 640px) { .wahlen--zahler { grid-template-columns: repeat(2, 1fr); } }
+  .wahl { position: relative; display: block; cursor: pointer; }
+  .wahl input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; z-index: 1; }
+  .wahl__box {
+    position: relative; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+    min-height: 98px; padding: 14px 10px;
+    border: 2px solid var(--s-200); border-radius: var(--r-lg); background: var(--weiss);
+    text-align: center; font-weight: 700; line-height: 1.25; font-size: 16px;
+    transition: border-color var(--t), background var(--t), transform var(--t);
+  }
+  .wahl__box :global(.icon) { color: var(--rot); flex: none; }
+  .wahlen--zahler .wahl__box { flex-direction: row; justify-content: flex-start; text-align: left; min-height: 68px; padding: 12px 16px; gap: 14px; }
+  .wahl__box small { display: block; font-weight: 500; color: var(--s-600); font-size: 14px; }
+  .wahl:hover .wahl__box { border-color: var(--s-400); }
+  .wahl input:checked + .wahl__box { border-color: var(--rot); background: var(--rot-hell); box-shadow: inset 0 0 0 1px var(--rot); animation: sm-pop .25s ease; }
+  .wahl input:checked + .wahl__box::after {
+    content: ""; position: absolute; top: 8px; right: 8px; width: 22px; height: 22px; border-radius: 50%;
+    background: var(--rot) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 12.5 4 4 8-9'/%3E%3C/svg%3E") center / 14px no-repeat;
+  }
+  .wahl input:focus-visible + .wahl__box { outline: 3px solid var(--rot); outline-offset: 2px; }
+  .sm-gruppe[aria-invalid="true"] .wahl__box { border-color: var(--rot-dunkel); }
+  @keyframes sm-pop { 50% { transform: scale(.97); } }
+
+  /* Eingabefelder */
+  .feld { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; font-weight: 600; font-size: 16px; }
+  .feld > input, .feld > textarea { flex: 1 1 100%; }
+  .feld-wrap { display: grid; gap: 6px; align-content: start; }
+  .feld small { font-weight: 500; color: var(--s-600); }
+  .feld-reihe { display: grid; gap: 16px; }
+  @media (min-width: 640px) { .feld-reihe { grid-template-columns: 1fr 1fr; } }
+  input:not([type="radio"]):not([type="checkbox"]), textarea {
+    font: inherit; font-weight: 400; color: var(--s-950);
+    padding: 12px 14px; min-height: 52px; width: 100%;
+    border: 1.5px solid var(--s-300); border-radius: var(--r); background: var(--weiss);
+  }
+  textarea { resize: vertical; min-height: 90px; }
+  input:focus-visible, textarea:focus-visible { outline: 3px solid var(--rot); outline-offset: 1px; border-color: var(--rot); }
+  input[aria-invalid="true"] { border-color: var(--rot-dunkel); background: #fff8f7; }
+  .check { display: flex; gap: 12px; align-items: flex-start; font-size: 16px; cursor: pointer; }
+  .check input { flex: none; width: 24px; height: 24px; margin: 1px 0 0; accent-color: var(--rot); }
+  .check input[aria-invalid="true"] { outline: 2px solid var(--rot-dunkel); outline-offset: 2px; }
+  :global(html.js) .sm-zeit.ist-zu, :global(html.js) .sm-versicherung.ist-zu { display: none; }
+
+  .sm-fehler { margin: 0; color: var(--rot-dunkel); font-weight: 600; font-size: 15px; }
+  .sm-fehler:empty { display: none; }
+  .sm-alarm, .sm-status { margin: 0; }
+  .sm-alarm:empty, .sm-status:empty { display: none; }
+  .sm-alarm { padding: 12px 14px; border-left: 4px solid var(--rot); background: var(--rot-hell); color: var(--rot-dunkel); font-weight: 600; border-radius: 0 var(--r) var(--r) 0; }
+  .sm-status { padding: 12px 14px; border-left: 4px solid var(--gruen); background: #eef7f1; color: #165c2f; font-weight: 600; border-radius: 0 var(--r) var(--r) 0; }
+
+  .sm-nav { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; }
+  :global(html:not(.js)) .sm-nav { display: none; }
+  .sm-nav :global(.sm-weiter) { margin-left: auto; min-width: 160px; }
+  .sm-nav :global(.icon--links) { transform: rotate(180deg); }
+  @media (max-width: 479px) { .sm-nav :global(.btn) { flex: 1 1 0; min-width: 0; padding-inline: 14px; } }
+
+  .sm-vorschau { display: none; border: 1px solid var(--s-200); border-radius: var(--r); padding: 10px 14px; background: var(--s-50); }
+  :global(html.js) .sm-vorschau { display: block; }
+  .sm-vorschau summary { cursor: pointer; font-weight: 600; }
+  .sm-vorschau pre { margin: 10px 0 0; white-space: pre-wrap; font: inherit; font-size: 15px; color: var(--s-700); }
+
+  .sm-senden { display: grid; gap: 12px; padding: 18px; border-radius: var(--r-lg); background: var(--s-950); color: var(--s-200);
+    background-image: radial-gradient(80% 70% at 100% 0%, rgba(200,32,14,.35), transparent 60%); }
+  .sm-senden :global(.btn) { width: 100%; min-height: 56px; }
+  .sm-senden :focus-visible { outline-color: var(--weiss); }
+  .sm-foto { display: flex; gap: 10px; align-items: center; margin: 0; color: var(--weiss); font-size: 17px; }
+  .sm-foto :global(.icon) { flex: none; color: var(--rot-auf-dunkel); }
+  .sm-senden__info, .sm-senden .klein { margin: 0; color: var(--s-300); }
+  .sm-js { display: none !important; }
+  :global(html.js) .sm-js { display: inline-flex !important; }
+  :global(html.js) .sm-nojs { display: none !important; }
+
+  .sm-hilfe { display: grid; gap: 16px; }
+  .sm-hilfe .card p { margin: 0 0 10px; color: var(--s-700); }
+  .sm-hilfe .card > a { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; }
+  .sm-hilfe__titel { font-size: 22px; margin-bottom: 10px; }
+  .sm-hilfe__wege { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+  .sm-hilfe__wege a { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-weight: 700; color: var(--s-950); text-decoration: none; }
+  .sm-hilfe__wege a:hover { color: var(--rot-dunkel); }
+  .sm-hilfe__wege :global(.icon) { color: var(--rot); }
+</style>
+
+<script>
+  const form = document.getElementById("sm") as HTMLFormElement | null;
+  if (form) {
+    form.noValidate = true; // eigene, freundliche Prüfung statt Browser-Meldungen
+    const schritte = [...form.querySelectorAll<HTMLElement>(".sm-schritt")];
+    const listePunkte = [...form.querySelectorAll<HTMLElement>(".sm-fortschritt__liste li")];
+    const bahn = form.querySelector<HTMLElement>(".sm-fortschritt__bahn span")!;
+    const stand = document.getElementById("sm-stand")!;
+    const alarm = document.getElementById("sm-alarm")!;
+    const status = document.getElementById("sm-status")!;
+    const vorschau = document.getElementById("sm-text")!;
+    const waBtn = document.getElementById("sm-wa") as HTMLAnchorElement;
+    const mailBtn = document.getElementById("sm-mail") as HTMLAnchorElement;
+    const namen = ["Schaden", "Wer zahlt?", "Kontakt"];
+    const ruhig = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let akt = 0;
+
+    const el = <T extends Element = HTMLInputElement>(name: string) => form.elements.namedItem(name) as unknown as T;
+    const text = (name: string) => (el<HTMLInputElement | HTMLTextAreaElement>(name)?.value ?? "").trim();
+    const radio = (name: string) => (el<RadioNodeList>(name)?.value ?? "");
+    const haken = (name: string) => el<HTMLInputElement>(name).checked;
+    const zahlerKey = () => form.querySelector<HTMLInputElement>('input[name="Wer zahlt"]:checked')?.dataset.key ?? "";
+
+    // ---------- Nachricht zusammenbauen ----------
+    const zeilen = (): string[] => {
+      const z: (string | false)[] = [
+        "Hallo Destar Lackdoktor, ich möchte einen Schaden melden.",
+        "",
+        `Was ist passiert: ${radio("Schadenart") || "–"}`,
+        !!text("Beschreibung") && `Beschreibung: ${text("Beschreibung")}`,
+        !!text("Fahrzeug") && `Fahrzeug / Kennzeichen: ${text("Fahrzeug")}`,
+        `Wer zahlt: ${radio("Wer zahlt") || "–"}`,
+        zahlerKey() !== "selbst" && !!text("Versicherung") && `Versicherung: ${text("Versicherung")}`,
+        zahlerKey() !== "selbst" && !!text("Schadennummer") && `Schadennummer: ${text("Schadennummer")}`,
+        "",
+        `Name: ${text("Name")}`,
+        `Telefon: ${text("Telefon")}`,
+        !!text("E-Mail") && `E-Mail: ${text("E-Mail")}`,
+        haken("Rückruf") && `Rückruf erwünscht${text("Rückruf-Zeit") ? `: ${text("Rückruf-Zeit")}` : ""}`,
+      ];
+      return z.filter((x): x is string => x !== false);
+    };
+    const aktualisiere = () => {
+      const basis = zeilen();
+      const wa = [...basis, "", "Fotos vom Schaden hänge ich hier im Chat an."].join("\n");
+      const betreff = `Schadenmeldung: ${radio("Schadenart") || "Schaden"}${text("Name") ? ` – ${text("Name")}` : ""}`;
+      waBtn.href = `https://wa.me/${form.dataset.wa}?text=${encodeURIComponent(wa)}`;
+      mailBtn.href = `mailto:${form.dataset.mail}?subject=${encodeURIComponent(betreff)}&body=${encodeURIComponent(basis.join("\r\n"))}`;
+      vorschau.textContent = basis.join("\n");
+    };
+
+    // ---------- Prüfung ----------
+    type Problem = { fokus: HTMLElement; name: string };
+    const setzFehler = (id: string, msg: string, felder: Element[]) => {
+      const p = document.getElementById(id);
+      if (p) p.textContent = msg;
+      felder.forEach((f) => (msg ? f.setAttribute("aria-invalid", "true") : f.removeAttribute("aria-invalid")));
+    };
+    const pruefe = (i: number): Problem[] => {
+      const probleme: Problem[] = [];
+      const gruppe = (name: string, id: string, msg: string, kurz: string) => {
+        const fs = schritte[i].querySelector<HTMLElement>("fieldset")!;
+        const ok = !!radio(name);
+        setzFehler(id, ok ? "" : msg, [fs]);
+        if (!ok) probleme.push({ fokus: fs.querySelector("input")!, name: kurz });
+      };
+      if (i === 0) gruppe("Schadenart", "f-art", "Bitte wählen Sie aus, was passiert ist.", "Was ist passiert");
+      if (i === 1) gruppe("Wer zahlt", "f-zahler", "Bitte wählen Sie eine Option – „Weiß ich noch nicht“ ist völlig in Ordnung.", "Wer zahlt");
+      if (i === 2) {
+        const n = el("Name"), t = el("Telefon"), m = el("E-Mail"), d = el("Datenschutz");
+        const nMsg = text("Name") ? "" : "Bitte geben Sie Ihren Namen an.";
+        const ziffern = text("Telefon").replace(/\D/g, "").length;
+        const tMsg = !text("Telefon") ? "Bitte geben Sie Ihre Telefonnummer an, damit wir Sie erreichen." : ziffern < 6 ? "Bitte prüfen Sie die Telefonnummer – sie scheint unvollständig." : "";
+        const mMsg = text("E-Mail") && !m.checkValidity() ? "Bitte prüfen Sie die E-Mail-Adresse – oder lassen Sie das Feld einfach leer." : "";
+        const dMsg = d.checked ? "" : "Bitte bestätigen Sie den Datenschutzhinweis.";
+        setzFehler("f-name", nMsg, [n]); if (nMsg) probleme.push({ fokus: n, name: "Name" });
+        setzFehler("f-tel", tMsg, [t]); if (tMsg) probleme.push({ fokus: t, name: "Telefon" });
+        setzFehler("f-mail", mMsg, [m]); if (mMsg) probleme.push({ fokus: m, name: "E-Mail" });
+        setzFehler("f-ds", dMsg, [d]); if (dMsg) probleme.push({ fokus: d, name: "Datenschutz" });
+      }
+      return probleme;
+    };
+    const melde = (probleme: Problem[]) => {
+      if (!probleme.length) { alarm.textContent = ""; return true; }
+      alarm.textContent = probleme.length === 1 ? "Bitte ergänzen Sie noch ein Feld." : `Bitte ergänzen Sie noch: ${probleme.map((p) => p.name).join(", ")}.`;
+      probleme[0].fokus.focus();
+      return false;
+    };
+
+    // ---------- Schritte ----------
+    const zeige = (i: number, fokus = true) => {
+      akt = Math.max(0, Math.min(schritte.length - 1, i));
+      schritte.forEach((s, k) => s.classList.toggle("ist-aktiv", k === akt));
+      listePunkte.forEach((li, k) => { li.classList.toggle("ist-aktiv", k === akt); li.classList.toggle("ist-fertig", k < akt); });
+      bahn.style.width = `${((akt + 1) / schritte.length) * 100}%`;
+      stand.textContent = `Schritt ${akt + 1} von ${schritte.length}: ${namen[akt]}`;
+      alarm.textContent = "";
+      if (!fokus) return;
+      if (form.getBoundingClientRect().top < 0) form.scrollIntoView({ block: "start", behavior: ruhig ? "auto" : "smooth" });
+      schritte[akt].querySelector<HTMLElement>(".sm-titel")?.focus({ preventScroll: true });
+    };
+    form.querySelectorAll(".sm-weiter").forEach((b) => b.addEventListener("click", () => { if (melde(pruefe(akt))) zeige(akt + 1); }));
+    form.querySelectorAll(".sm-zurueck").forEach((b) => b.addEventListener("click", () => zeige(akt - 1)));
+
+    // Enter in einem Feld = „Weiter“ (im letzten Schritt: prüfen und auf die Senden-Buttons lenken)
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (!melde(pruefe(akt))) return;
+      if (akt < schritte.length - 1) zeige(akt + 1);
+      else waBtn.focus();
+    });
+
+    // Senden: vorher alles prüfen; Link-Ziel (wa.me bzw. mailto) ist bereits fertig gesetzt
+    const vorSenden = (e: Event, weg: string) => {
+      aktualisiere();
+      for (let i = 0; i < schritte.length; i++) {
+        const p = pruefe(i);
+        if (p.length) { e.preventDefault(); status.textContent = ""; if (i !== akt) zeige(i, false); melde(p); return; }
+      }
+      status.textContent = weg === "wa"
+        ? "WhatsApp öffnet sich mit Ihrer Meldung. Bitte dort noch Fotos anhängen und auf „Senden“ tippen."
+        : "Ihr E-Mail-Programm öffnet sich mit Ihrer Meldung. Bitte dort noch auf „Senden“ klicken – Fotos können Sie anhängen.";
+    };
+    waBtn.addEventListener("click", (e) => vorSenden(e, "wa"));
+    mailBtn.addEventListener("click", (e) => vorSenden(e, "mail"));
+
+    // Abhängige Felder: Versicherung nur, wenn nicht selbst gezahlt; Uhrzeit nur bei Rückrufwunsch
+    const versBox = form.querySelector<HTMLElement>(".sm-versicherung")!;
+    const zeitBox = form.querySelector<HTMLElement>(".sm-zeit")!;
+    const abhaengig = () => {
+      versBox.classList.toggle("ist-zu", zahlerKey() === "selbst");
+      zeitBox.classList.toggle("ist-zu", !haken("Rückruf"));
+    };
+
+    // Fehlermeldung eines Feldes verschwindet, sobald es korrigiert wird
+    form.addEventListener("input", (e) => {
+      const t = e.target as HTMLElement;
+      if (t.getAttribute("aria-invalid") === "true" || t.closest('fieldset[aria-invalid="true"]')) {
+        const ziel = t.closest("fieldset") ?? t;
+        ziel.removeAttribute("aria-invalid");
+        const id = (ziel.getAttribute("aria-describedby") ?? "").split(" ").pop();
+        if (id) { const p = document.getElementById(id); if (p) p.textContent = ""; }
+      }
+      if (!form.querySelector('[aria-invalid="true"]')) alarm.textContent = "";
+      abhaengig();
+      aktualisiere();
+    });
+    form.addEventListener("change", () => { abhaengig(); aktualisiere(); });
+
+    // Vorauswahl per URL (z. B. von den Leistungsseiten)
+    const q = new URLSearchParams(location.search);
+    const art = q.get("art");
+    if (art) { const r = form.querySelector<HTMLInputElement>(`input[name="Schadenart"][data-key="${CSS.escape(art)}"]`); if (r) r.checked = true; }
+    if (q.get("fahrzeug") === "wohnwagen") el("Fahrzeug").value = "Wohnwagen / Wohnmobil";
+
+    abhaengig();
+    aktualisiere();
+    zeige(0, false);
+  }
+</script>

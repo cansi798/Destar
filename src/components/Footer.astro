@@ -1,6 +1,6 @@
 ---
 // Fußbereich: Kontakt, Öffnungszeiten, Leistungen, Rechtliches.
-import { HOURS, LEISTUNGEN_NAV, SITE, mailLink, telLink, u, waLink } from "../consts";
+import { HOURS, LEISTUNGEN_NAV, MELDEN, SITE, mailLink, telLink, u, waLink } from "../consts";
 import Icon from "./Icon.astro";
 
 const jahr = new Date().getFullYear();
@@ -15,13 +15,14 @@ const jahr = new Date().getFullYear();
           <img src={u("assets/logo.png")} alt="Destar Lackdoktor Meisterbetrieb" width="300" height="100" loading="lazy" decoding="async" />
         </picture>
       </span>
-      <p>Lackreparatur, Smart-Repair, Karosserie, Autoglas und Unfallservice – Ihre Werkstatt in Norderstedt.</p>
+      <p>Unfallservice, Lack, Smart-Repair, Karosserie, Autoglas, Wohnwagen &amp; Wohnmobile – Ihr Meisterbetrieb in Norderstedt.</p>
       <a class="ftr__insta" href={SITE.instagram} target="_blank" rel="noopener"><Icon name="instagram" size={20} /> Destar auf Instagram</a>
     </div>
 
     <div>
       <h2 class="ftr__kopf">Kontakt</h2>
       <ul class="ftr__liste">
+        <li><Icon name="doc" size={20} /><a href={MELDEN.href}><strong>{MELDEN.label}</strong></a></li>
         <li><Icon name="pin" size={20} /><a href={SITE.mapsUrl} target="_blank" rel="noopener">{SITE.street}<br />{SITE.zip} {SITE.city}</a></li>
         <li><Icon name="phone" size={20} /><a href={telLink}>{SITE.phoneDisplay}</a></li>
         <li><Icon name="whatsapp" size={20} /><a href={waLink()} target="_blank" rel="noopener">WhatsApp schreiben</a></li>

@@ -4,27 +4,25 @@
 // Ein kleiner Canvas-Sprühnebel läuft EINMAL beim Laden (ca. 2 s) und stoppt dann –
 // bei „Bewegung reduzieren“ oder ohne JS gar nicht.
 import { Image } from "astro:assets";
-import { SITE, telLink, u, waLink } from "../consts";
+import { MELDEN, SITE, telLink, waLink } from "../consts";
 import Icon from "./Icon.astro";
 import kratzer from "../assets/img/schaden-kratzer.webp";
 
-const checks = ["Meisterbetrieb", "Kostenlose Begutachtung", "Komplette Schadensabwicklung", "Pkw & Wohnmobil"];
+// Vertrauens-Haken: stehen nur hier (keine Wiederholung weiter unten auf der Startseite).
+const checks = ["Meisterbetrieb", "Kostenlose Begutachtung", "Spezialisiert auf Wohnwagen & Wohnmobile"];
 ---
 
 <section class="hero metallic">
   <canvas class="hero__nebel" aria-hidden="true"></canvas>
   <div class="container hero__grid">
     <div class="hero__text">
-      <p class="eyebrow hero__eyebrow">Autolackiererei · Smart-Repair · Unfallservice</p>
-      <h1 class="hero__titel">Ihr Lack-Experte<br /> in Norderstedt</h1>
-      <p class="lead">
-        Fahrzeuglackierung und Schadenmanagement – professionell, transparent, zuverlässig.
-        Wir begutachten Ihr Fahrzeug kostenlos und kümmern uns vom Kratzer bis zum Unfallschaden um alles.
-      </p>
+      <p class="eyebrow hero__eyebrow">Lack · Karosserie · Unfallservice in Norderstedt</p>
+      <h1 class="hero__titel">Unfallschaden?<br /> Wir regeln alles.</h1>
+      <p class="lead">Vom Kratzer bis zum Unfall: Wir kümmern uns um alles – auch um die Versicherung. Sie bringen nur Ihr Auto.</p>
       <div class="btn-reihe">
-        <a class="btn glanz" href={telLink}><Icon name="phone" size={22} /> {SITE.phoneDisplay}</a>
+        <a class="btn glanz hero__melden" href={MELDEN.href}><Icon name="doc" size={22} /> {MELDEN.label} <Icon name="arrow" size={20} /></a>
+        <a class="btn btn--glas" href={telLink}><Icon name="phone" size={22} /> {SITE.phoneDisplay}</a>
         <a class="btn btn--wa" href={waLink()} target="_blank" rel="noopener"><Icon name="whatsapp" size={22} /> WhatsApp</a>
-        <a class="btn btn--glas" href={u("kontakt-anfahrt/#anfrage")}>Termin anfragen <Icon name="arrow" size={20} /></a>
       </div>
       <ul class="hero__checks">
         {checks.map((c) => <li><Icon name="check" size={18} /> {c}</li>)}
@@ -93,6 +91,8 @@ const checks = ["Meisterbetrieb", "Kostenlose Begutachtung", "Komplette Schadens
   }
   .hero__kante { position: absolute; left: 0; right: 0; bottom: -1px; width: 100%; height: 48px; display: block; }
   .hero :global(.btn) { flex: 1 1 auto; }
+  .hero__melden { min-height: 58px; font-size: 21px; flex-basis: 100% !important; }
+  @media (min-width: 560px) { .hero__melden { flex-basis: auto !important; } }
   @media (min-width: 560px) { .hero :global(.btn) { flex: 0 0 auto; } }
 </style>
 

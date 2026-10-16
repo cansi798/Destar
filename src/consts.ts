@@ -36,18 +36,23 @@ export const HOURS_SHORT = "Mo–Fr 8–17 Uhr";
 export type NavChild = { label: string; href: string; icon: string; desc: string };
 export type NavItem = { label: string; href: string; children?: NavChild[] };
 
-/** Leistungen in Menü-Reihenfolge (Slugs = alte URLs, damit Links erhalten bleiben). */
+/** Leistungen in Menü-Reihenfolge (Slugs = alte URLs, damit Links erhalten bleiben).
+ *  desc = Kundenproblem → unsere Lösung (Kundenwunsch 16.10.2026: Lösungen statt Handwerk beschreiben). */
 export const LEISTUNGEN_NAV: NavChild[] = [
-  { label: "Smart-Repair", href: u("leistungen/smart-repair/"), icon: "spark", desc: "Kratzer, Dellen, Felgen – schnell und günstig" },
-  { label: "Lackierarbeiten", href: u("leistungen/lackierarbeiten/"), icon: "spray", desc: "Exakter Farbton aus der Lackierkabine" },
-  { label: "Karosseriearbeiten", href: u("leistungen/karosseriearbeiten/"), icon: "car", desc: "Instandsetzung nach Unfall- und Parkschäden" },
-  { label: "Unfallservice", href: u("leistungen/unfallservice/"), icon: "shield", desc: "Abschleppen, Gutachten, Versicherung, Ersatzwagen" },
-  { label: "Autoglas & Steinschlag", href: u("leistungen/autoglas-steinschlagreparatur/"), icon: "glass", desc: "Steinschlag reparieren oder Scheibe tauschen" },
+  { label: "Unfallservice", href: u("leistungen/unfallservice/"), icon: "shield", desc: "Unfall? Wir regeln alles – inkl. Versicherung" },
+  { label: "Smart-Repair", href: u("leistungen/smart-repair/"), icon: "spark", desc: "Kratzer oder Delle? Punktgenau repariert" },
+  { label: "Lackierarbeiten", href: u("leistungen/lackierarbeiten/"), icon: "spray", desc: "Lackschaden? Exakter Farbton aus der Kabine" },
+  { label: "Karosseriearbeiten", href: u("leistungen/karosseriearbeiten/"), icon: "car", desc: "Beule im Blech? So schonend wie möglich gerichtet" },
+  { label: "Autoglas & Steinschlag", href: u("leistungen/autoglas-steinschlagreparatur/"), icon: "glass", desc: "Steinschlag? Oft reicht eine Reparatur" },
+  { label: "Wohnwagen & Wohnmobile", href: u("leistungen/wohnwagen-lackierung/"), icon: "caravan", desc: "Unser Schwerpunkt – mit vollem Service" },
 ];
+
+/** Haupt-Handlungsaufruf überall: Schaden melden (Kundenwunsch 16.10.2026). */
+export const MELDEN = { label: "Schaden melden", href: u("schaden-melden/") };
 
 export const NAV: NavItem[] = [
   { label: "Leistungen", href: u("leistungen/"), children: LEISTUNGEN_NAV },
-  { label: "Ablauf", href: u("#ablauf") },
+  { label: "So geht's", href: u("#ablauf") },
   { label: "FAQ", href: u("#faq") },
   { label: "Kontakt & Anfahrt", href: u("kontakt-anfahrt/") },
 ];

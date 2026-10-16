@@ -5,7 +5,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHero from "../components/PageHero.astro";
 import Standort from "../components/Standort.astro";
 import Icon from "../components/Icon.astro";
-import { SITE, telLink, u, waLink } from "../consts";
+import { MELDEN, SITE, telLink, u, waLink } from "../consts";
 
 const crumbs = [{ name: "Kontakt & Anfahrt", href: u("kontakt-anfahrt/") }];
 const anliegen = ["Lackschaden / Lackierung", "Smart-Repair (Kratzer, Delle, Felge)", "Karosserie", "Unfallschaden", "Autoglas / Steinschlag", "Aufbereitung / Leasing-Rückgabe", "Sonstiges"];
@@ -20,13 +20,18 @@ const anliegen = ["Lackschaden / Lackierung", "Smart-Repair (Kratzer, Delle, Fel
     eyebrow="Kontakt & Anfahrt"
     titel="Sprechen Sie"
     akzent="uns an"
-    lead="Am schnellsten erreichen Sie uns telefonisch oder per WhatsApp. Gern können Sie uns auch eine Anfrage per E-Mail schicken – wir melden uns schnellstmöglich."
+    lead="Am schnellsten erreichen Sie uns telefonisch oder per WhatsApp. Wir melden uns schnellstmöglich."
     crumbs={crumbs}
+    buttons={false}
   />
 
   <section class="section">
     <div class="container kt">
       <div class="kt__wege">
+        <a class="weg weg--melden reveal" href={MELDEN.href}>
+          <span class="weg__icon"><Icon name="doc" size={26} /></span>
+          <span><strong>{MELDEN.label}</strong>Unfall, Kratzer, Steinschlag – in 3 Schritten</span>
+        </a>
         <a class="weg reveal" href={telLink}>
           <span class="weg__icon"><Icon name="phone" size={26} /></span>
           <span><strong>Anrufen</strong>{SITE.phoneDisplay}</span>
@@ -43,6 +48,7 @@ const anliegen = ["Lackschaden / Lackierung", "Smart-Repair (Kratzer, Delle, Fel
 
       <form class="form card" id="anfrage" action={`mailto:${SITE.email}`} method="post" enctype="text/plain" aria-labelledby="form-titel">
         <h2 id="form-titel">Anfrage <span class="spray akzent">senden</span></h2>
+        <p class="klein">Sie möchten einen Schaden melden? Dafür gibt es unser <a href={MELDEN.href}>Schadenformular</a> – da geht es schneller.</p>
         <p class="klein">Felder mit * sind Pflichtfelder. Beim Absenden öffnet sich Ihr E-Mail-Programm mit einer fertigen Nachricht an uns – über diese Website selbst werden keine Daten übertragen oder gespeichert.</p>
         <div class="form__reihe">
           <label>Name *<input name="Name" autocomplete="name" required /></label>
@@ -86,6 +92,7 @@ const anliegen = ["Lackschaden / Lackierung", "Smart-Repair (Kratzer, Delle, Fel
   .weg strong { display: block; font-family: var(--font-head); font-size: 22px; text-transform: uppercase; }
   .weg__icon { flex: none; width: 54px; height: 54px; border-radius: 50%; background: var(--rot); color: var(--weiss); display: grid; place-items: center; }
   .weg--wa .weg__icon { background: #1B7F43; }
+  .weg--melden { background: var(--rot-hell); border-color: var(--rot); }
 
   .form { display: grid; gap: 16px; scroll-margin-top: calc(var(--header-h) + 16px); }
   .form h2 { margin-bottom: 0; }

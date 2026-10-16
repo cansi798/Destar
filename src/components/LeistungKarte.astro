@@ -1,21 +1,27 @@
 ---
-// Leistungskarte im Stil einer Lack-Farbmusterkarte: Bild, Farbstreifen mit „Farbcode“,
-// Titel, Kurztext. Glanzlicht beim Überfahren.
+// Leistungskarte im Stil einer Lack-Farbmusterkarte: Bild (oder gezeichnete Grafik),
+// Farbstreifen mit „Farbcode“, Kundenproblem → Leistung → Lösung. Glanzlicht beim Überfahren.
 import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
 import Icon from "./Icon.astro";
-interface Props { href: string; titel: string; text: string; icon: string; bild: ImageMetadata; alt: string; nr: number; }
-const { href, titel, text, icon, bild, alt, nr } = Astro.props;
+import WohnwagenGrafik from "./WohnwagenGrafik.astro";
+interface Props { href: string; titel: string; text: string; icon: string; bild?: ImageMetadata; alt?: string; nr: number; problem?: string; }
+const { href, titel, text, icon, bild, alt = "", nr, problem } = Astro.props;
 ---
 <a class="lk glanz reveal" href={href}>
-  <div class="lk__bild">
-    <Image src={bild} alt={alt} widths={[360, 540, 720]} sizes="(min-width: 1024px) 370px, (min-width: 640px) 46vw, 92vw" />
+  <div class:list={["lk__bild", { "lk__bild--grafik metallic": !bild }]}>
+    {bild ? (
+      <Image src={bild} alt={alt} widths={[360, 540, 720]} sizes="(min-width: 1024px) 370px, (min-width: 640px) 46vw, 92vw" />
+    ) : (
+      <WohnwagenGrafik />
+    )}
   </div>
   <div class="lk__muster" aria-hidden="true">
     <span class="lk__code">DL-{String(nr).padStart(2, "0")}</span>
     <span class="lk__icon"><Icon name={icon} size={22} /></span>
   </div>
   <div class="lk__text">
+    {problem && <p class="lk__problem">{problem}</p>}
     <h3>{titel}</h3>
     <p>{text}</p>
     <span class="lk__mehr">Mehr erfahren <Icon name="arrow" size={18} /></span>
@@ -34,6 +40,8 @@ const { href, titel, text, icon, bild, alt, nr } = Astro.props;
   .lk__bild { aspect-ratio: 16 / 10; overflow: hidden; border-radius: 6px 6px 0 0; background: var(--s-100); }
   .lk__bild :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
   .lk:hover .lk__bild :global(img) { transform: scale(1.04); }
+  @media (max-width: 639px) { .lk__bild { aspect-ratio: 2.2 / 1; } .lk__bild--grafik { padding: 3% 22%; } } /* mobil kompakter */
+  .lk__bild--grafik { display: grid; place-items: center; padding: 6% 12%; }
   .lk__muster {
     display: flex; justify-content: space-between; align-items: center;
     height: 44px; padding: 0 16px;
@@ -42,7 +50,8 @@ const { href, titel, text, icon, bild, alt, nr } = Astro.props;
   }
   .lk__code { font-family: var(--font-head); font-weight: 700; letter-spacing: .18em; font-size: 15px; }
   .lk__text { padding: 20px 20px 22px; display: flex; flex-direction: column; flex: 1; }
+  .lk__problem { margin: 0 0 4px; font-weight: 700; font-style: italic; color: var(--rot-dunkel); font-size: 16px; line-height: 1.35; }
   .lk__text h3 { margin-bottom: 8px; }
-  .lk__text p { color: var(--s-600); font-size: 16px; flex: 1; }
+  .lk__text p:not(.lk__problem) { color: var(--s-600); font-size: 16px; flex: 1; }
   .lk__mehr { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; color: var(--rot-dunkel); }
 </style>

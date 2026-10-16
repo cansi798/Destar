@@ -12,7 +12,9 @@ in Norderstedt (Lackreparatur, Smart-Repair, Karosserie, Unfallservice, Autoglas
 
 [Astro](https://astro.build), rein statisch. Kein Tracking, keine Cookies, keine externen Schriften
 (Barlow / Barlow Condensed lokal in `src/styles/fonts/`, Lizenz SIL OFL), keine eingebetteten Karten.
-JavaScript nur für Menü, Scroll-Animationen, Kontaktformular (mailto) und den einmaligen Sprühnebel im Hero.
+JavaScript nur für Menü, Scroll-Animationen, Kontaktformular (mailto), das Formular „Schaden melden“
+(3 Schritte, Versand per WhatsApp/E-Mail, ohne JS ein normales mailto-Formular) und den einmaligen
+Sprühnebel im Hero.
 
 **Lack-Optik:** Überschriften-Akzente werden „aufgesprüht“ (CSS-Maske + Farbnebel), Lackstreifen
 (SVG mit rauem Sprührand), Glanzlicht über Buttons/Karten, Ablauf als Lackschichten
@@ -23,7 +25,7 @@ Alle Animationen starten erst bei Sichtbarkeit; bei „Bewegung reduzieren“ wi
 src/
   consts.ts              Firmendaten, Navigation, Kontakt-Links (zentral pflegen!)
   content/leistungen/    eine Markdown-Datei je Leistung (Slug = alte URL)
-  data/home.ts           Ablauf, Vorteile, FAQ der Startseite
+  data/home.ts           Sorgen, Ablauf, FAQ der Startseite (jede Aussage nur einmal)
   components/            Header, Hero, PageHero, SprayStrich, Ablauf, Faq, LeistungKarte, …
   pages/                 Startseite, Leistungen, Kontakt & Anfahrt, Impressum, Datenschutz,
                          sitemap.xml, robots.txt, llms.txt, 404

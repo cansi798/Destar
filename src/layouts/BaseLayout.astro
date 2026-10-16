@@ -118,7 +118,7 @@ const jsonLd = [business, breadcrumb, ...schema].filter(Boolean);
     <script>
       // Scroll-Reveal + Lack-Animationen (Sprühen, Glanz) starten erst bei Sichtbarkeit –
       // reine Zusatzschicht – ohne JS bleibt alles sichtbar.
-      const els = document.querySelectorAll(".reveal, .spray, .glanz, .bild-spray, .strich-wrap");
+      const els = document.querySelectorAll(".reveal, .spray, .glanz, .bild-spray, .strich-wrap, .anim");
       if ("IntersectionObserver" in window) {
         const io = new IntersectionObserver((entries) => {
           for (const e of entries) if (e.isIntersecting) { e.target.classList.add("ist-sichtbar"); io.unobserve(e.target); }

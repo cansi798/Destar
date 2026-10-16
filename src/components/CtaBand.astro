@@ -1,11 +1,11 @@
 ---
 // Roter Handlungsaufruf mit Sprühnebel-Textur und Glanzlicht.
-import { SITE, telLink, u, waLink } from "../consts";
+import { MELDEN, SITE, telLink, waLink } from "../consts";
 import Icon from "./Icon.astro";
 interface Props { titel?: string; text?: string; }
 const {
-  titel = "Kratzer, Delle oder Unfall?",
-  text = "Wir begutachten Ihr Fahrzeug kostenlos und sagen Ihnen ehrlich, welche Reparatur sinnvoll ist.",
+  titel = "Schaden am Fahrzeug?",
+  text = "Melden Sie ihn in drei kurzen Schritten – um alles Weitere kümmern wir uns.",
 } = Astro.props;
 ---
 <section class="cta glanz" aria-labelledby="cta-titel">
@@ -15,9 +15,9 @@ const {
       <p>{text}</p>
     </div>
     <div class="btn-reihe">
-      <a class="btn btn--hell" href={telLink}><Icon name="phone" size={22} /> {SITE.phoneDisplay}</a>
+      <a class="btn btn--hell" href={MELDEN.href}><Icon name="doc" size={22} /> {MELDEN.label}</a>
+      <a class="btn btn--dunkel" href={telLink}><Icon name="phone" size={22} /> {SITE.phoneDisplay}</a>
       <a class="btn btn--dunkel" href={waLink()} target="_blank" rel="noopener"><Icon name="whatsapp" size={22} /> WhatsApp</a>
-      <a class="btn btn--dunkel" href={u("kontakt-anfahrt/#anfrage")}><Icon name="mail" size={22} /> Anfrage</a>
     </div>
   </div>
 </section>

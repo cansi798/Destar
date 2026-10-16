@@ -1,17 +1,27 @@
 ---
 // Ablauf in Schritten – dargestellt als Lackschichten: Jeder Schritt bekommt einen
-// Farbstreifen (Grundierung → Füller → Basislack → Klarlack), der beim Sichtbarwerden
-// nacheinander „aufgetragen“ wird.
-interface Props { steps: { title: string; text: string }[]; }
+// Farbstreifen (Grundierung → Basislack → Klarlack), der beim Sichtbarwerden nacheinander
+// „aufgetragen“ wird. Ab Tablet fährt dabei eine kleine Lackierpistole über die Streifen
+// (Fortschrittslinie). Ohne JS / bei „Bewegung reduzieren“: fertiges Endbild, keine Pistole.
+interface Props { steps: { title: string; text: string; icon?: string }[]; }
 const { steps } = Astro.props;
-const schichten = ["Grundierung", "Füller", "Basislack", "Klarlack"];
+import Icon from "./Icon.astro";
+const n = steps.length;
+const schichten = n === 3 ? ["Grundierung", "Basislack", "Klarlack"] : ["Grundierung", "Füller", "Basislack", "Klarlack"];
+const farbe = n === 3 ? [0, 2, 3] : [0, 1, 2, 3];
 ---
-<ol class="ablauf reveal">
+<ol class="ablauf reveal" style={`--n:${n}`}>
+  <li class="ablauf__pistole" aria-hidden="true">
+    <svg viewBox="0 0 40 40" focusable="false"><path d="M8 6h20a4 4 0 0 1 4 4v5H4v-5a4 4 0 0 1 4-4ZM12 15v6l-2 13h9l-2-13v-6M14 6V1h6v5" /><g class="ablauf__nebel"><circle cx="36" cy="10" r="1.6" /><circle cx="39" cy="14" r="1.2" /><circle cx="37" cy="5" r="1" /></g></svg>
+  </li>
   {steps.map((s, i) => (
     <li class="ablauf__schritt" style={`--i:${i}`}>
-      <span class={`ablauf__schicht s${i % 4}`} aria-hidden="true"></span>
-      <span class="ablauf__lage" aria-hidden="true">{schichten[i % 4]}</span>
-      <span class="ablauf__nr" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+      <span class={`ablauf__schicht s${farbe[i % farbe.length]}`} aria-hidden="true"></span>
+      <span class="ablauf__lage" aria-hidden="true">{schichten[i % schichten.length]}</span>
+      <span class="ablauf__kopf" aria-hidden="true">
+        <span class="ablauf__nr">{String(i + 1).padStart(2, "0")}</span>
+        {s.icon && <span class="ablauf__icon"><Icon name={s.icon} size={26} /></span>}
+      </span>
       <h3><span class="visually-hidden">Schritt {i + 1}: </span>{s.title}</h3>
       <p>{s.text}</p>
     </li>
@@ -19,24 +29,46 @@ const schichten = ["Grundierung", "Füller", "Basislack", "Klarlack"];
 </ol>
 
 <style>
-  .ablauf { list-style: none; margin: 0; padding: 0; display: grid; gap: 28px; counter-reset: s; }
-  @media (min-width: 640px) { .ablauf { grid-template-columns: repeat(2, 1fr); } }
-  @media (min-width: 1024px) { .ablauf { grid-template-columns: repeat(4, 1fr); gap: 24px; } }
+  .ablauf { position: relative; list-style: none; margin: 0; padding: 0; display: grid; gap: 28px; }
+  @media (min-width: 768px) { .ablauf { grid-template-columns: repeat(var(--n), 1fr); gap: 24px; } }
   .ablauf__schritt { position: relative; padding-top: 30px; }
   .ablauf__schicht { position: absolute; top: 0; left: 0; height: 12px; width: 100%; border-radius: 2px 10px 10px 2px; transform-origin: left; }
   .s0 { background: repeating-linear-gradient(90deg, #8e8e96 0 2px, #a5a5ad 2px 5px); }
   .s1 { background: linear-gradient(90deg, #c9c9cf, #e4e4e8); }
   .s2 { background: linear-gradient(90deg, var(--rot-dunkel), var(--rot)); }
   .s3 { background: linear-gradient(90deg, var(--rot), #ff8a78 60%, #fff 75%, var(--rot) 90%); box-shadow: 0 2px 10px rgba(200,32,14,.35); }
-  :global(html.js) .ablauf .ablauf__schicht { transform: scaleX(0); transition: transform .7s cubic-bezier(.5,.1,.2,1); transition-delay: calc(var(--i) * .35s + .1s); }
+  :global(html.js) .ablauf .ablauf__schicht { transform: scaleX(0); transition: transform .7s cubic-bezier(.5,.1,.2,1); transition-delay: calc(var(--i) * .7s + .1s); }
   :global(html.js) .ablauf:global(.ist-sichtbar) .ablauf__schicht { transform: scaleX(1); }
   .ablauf__lage { position: absolute; top: 16px; right: 0; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--s-600); }
+  .ablauf__kopf { display: flex; align-items: center; justify-content: space-between; margin: 10px 0 6px; }
   .ablauf__nr {
     display: block; font-family: var(--font-head); font-weight: 800; font-style: italic;
-    font-size: 64px; line-height: 1; margin: 10px 0 6px;
+    font-size: 64px; line-height: 1;
     color: transparent; -webkit-text-stroke: 2px var(--s-300);
   }
+  .ablauf__icon { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: var(--rot-hell); color: var(--rot-dunkel); }
   .ablauf__schritt h3 { margin-bottom: 8px; }
   .ablauf__schritt p { margin: 0; color: var(--s-600); font-size: 16px; }
-  @media (prefers-reduced-motion: reduce) { :global(html.js) .ablauf .ablauf__schicht { transform: none; } }
+
+  /* Lackierpistole als Fortschrittsanzeige (nur Tablet/Desktop, nur mit JS) */
+  .ablauf__pistole { display: none; }
+  @media (min-width: 768px) {
+    :global(html.js) .ablauf__pistole {
+      display: block; position: absolute; top: -34px; left: 0; width: 34px; height: 34px; opacity: 0; pointer-events: none;
+    }
+    .ablauf__pistole svg { width: 100%; height: 100%; display: block; }
+    .ablauf__pistole path { fill: var(--s-200); stroke: var(--s-950); stroke-width: 1.6; stroke-linejoin: round; }
+    .ablauf__nebel circle { fill: var(--rot); }
+    :global(html.js) .ablauf:global(.ist-sichtbar) .ablauf__pistole { animation: ablauf-pistole calc(var(--n) * .7s + .5s) cubic-bezier(.4,.1,.4,1) .1s both; }
+  }
+  @keyframes ablauf-pistole {
+    0% { opacity: 0; left: 0; }
+    8% { opacity: 1; }
+    88% { opacity: 1; left: calc(100% - 34px); }
+    100% { opacity: 0; left: calc(100% - 34px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(html.js) .ablauf .ablauf__schicht { transform: none; }
+    :global(html.js) .ablauf__pistole { display: none !important; }
+  }
 </style>

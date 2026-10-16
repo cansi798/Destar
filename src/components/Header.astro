@@ -1,8 +1,8 @@
 ---
-// Kopfzeile: Logo, Hauptnavigation mit Leistungs-Dropdown (Desktop), Telefon + Anfrage-Button.
+// Kopfzeile: Logo, Hauptnavigation mit Leistungs-Dropdown (Desktop), Telefon + „Schaden melden“.
 // Mobil: Telefon-Symbol + Burger (Vollbild-Menü). Dropdown funktioniert per Hover,
 // Tastatur-Fokus und Klick; Escape schließt.
-import { NAV, SITE, telLink, u } from "../consts";
+import { MELDEN, NAV, SITE, telLink, u } from "../consts";
 import Icon from "./Icon.astro";
 
 const pfad = Astro.url.pathname;
@@ -52,7 +52,7 @@ const aktiv = (href: string) => !href.includes("#") && href !== u("") && pfad.st
         <Icon name="phone" size={20} />
         <span class="hdr__tel-text"><small>Rufen Sie uns an</small>{SITE.phoneDisplay}</span>
       </a>
-      <a class="btn btn--klein hdr__cta" href={u("kontakt-anfahrt/#anfrage")}>Termin anfragen</a>
+      <a class="btn btn--klein glanz hdr__cta" href={MELDEN.href}>{MELDEN.label}</a>
       <button class="hdr__burger" type="button" aria-expanded="false" aria-controls="mobilmenue" aria-label="Menü öffnen">
         <Icon name="menu" size={28} class="icon burger-auf" />
         <Icon name="close" size={28} class="icon burger-zu" />
@@ -78,7 +78,8 @@ const aktiv = (href: string) => !href.includes("#") && href !== u("") && pfad.st
       </ul>
     </nav>
     <div class="mm__fuss">
-      <a class="btn" href={telLink}><Icon name="phone" /> {SITE.phoneDisplay}</a>
+      <a class="btn" href={MELDEN.href}><Icon name="doc" /> {MELDEN.label}</a>
+      <a class="btn btn--dunkel" href={telLink}><Icon name="phone" /> {SITE.phoneDisplay}</a>
       <p class="klein">Mo–Fr 8–17 Uhr · {SITE.street}, {SITE.zip} {SITE.city}</p>
     </div>
   </div>

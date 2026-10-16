@@ -1,11 +1,12 @@
 ---
 title: "Unfallservice –"
-akzent: "wir kümmern uns"
+akzent: "wir regeln alles"
 kurz: "Unfallservice"
-order: 4
+order: 1
 icon: "shield"
-teaser: "Abschleppen, Schadenanalyse, Gutachten, Kalkulation und Versicherung – und ein Ersatzfahrzeug für die Dauer der Reparatur."
-lead: "Unfall, Sturm oder Panne? Wir übernehmen die komplette Schadensabwicklung – vom Abschleppen über die Kommunikation mit der Versicherung bis zur fertigen Reparatur."
+problem: "Unfall oder Panne?"
+teaser: "Wir übernehmen alles: Abschleppen, Gutachten, Versicherung – und Sie bleiben mit einem Ersatzfahrzeug mobil."
+lead: "Egal ob Unfall, Sturm oder Panne: Sie melden den Schaden, wir übernehmen die komplette Abwicklung – vom Abschleppen bis zur fertigen Reparatur."
 beschreibung: "Unfallservice in Norderstedt: Abschleppen, Schadenanalyse, Gutachten, Kalkulation, Abwicklung mit der Versicherung und Ersatzfahrzeug während der Reparatur."
 bild: "../../assets/img/unfall-4x3.webp"
 bildAlt: "Zwei Autos nach einem Auffahrunfall, Stoßfänger an Stoßfänger"
@@ -17,28 +18,8 @@ punkte:
   - "Kommunikation mit der Versicherung"
   - "Nachvollziehbare Dokumentation aller Schritte für die Abrechnung"
   - "Ersatzfahrzeug für die Dauer der Reparatur"
-vorteile:
-  - icon: "tow"
-    title: "Abschleppen"
-    text: "Bei einem Unfall oder einer Panne schleppen wir Ihr Fahrzeug ab und beginnen schnellstmöglich mit der Instandsetzung."
-  - icon: "key"
-    title: "Mobil bleiben"
-    text: "Für die Dauer der Reparatur stellen wir Ihnen ein Ersatzfahrzeug zur Verfügung."
-faq:
-  - q: "Darf ich nach einem unverschuldeten Unfall die Werkstatt selbst wählen?"
-    a: "Im Haftpflichtfall gilt die freie Werkstattwahl. Wir setzen uns für Ihre Rechte und Leistungen ein – fair, engagiert und in Ihrem Sinne."
-  - q: "Kümmern Sie sich um die Versicherung?"
-    a: "Ja. Wir übernehmen die komplette Schadensabwicklung, inklusive Kommunikation mit der Versicherung, Gutachten, Kalkulation und aller nötigen Schritte. Alles wird nachvollziehbar für die Abrechnung dokumentiert."
-  - q: "Bekomme ich ein Ersatzfahrzeug?"
-    a: "Damit Sie schnell wieder mobil sind, stellen wir Ihnen für die Dauer der Reparatur ein Ersatzfahrzeug zur Verfügung."
 ---
 
-Bei Unfallschäden betreut Sie unser Team vollständig und professionell: Bei einem Unfall oder einer Panne schleppen wir Ihr Fahrzeug ab und beginnen schnellstmöglich mit der Instandsetzung in unserer Werkstatt.
+Nach einem Schaden wollen Sie vor allem eins: dass sich jemand kümmert. Genau das tun wir – unser Team betreut Sie vollständig und beginnt schnellstmöglich mit der Instandsetzung in unserer Werkstatt.
 
-Zuerst fertigen wir eine detaillierte Schadenanalyse für Ihre Versicherung an. Auch alle weiteren Schritte dokumentieren wir nachvollziehbar für die Abrechnung mit Ihrer Versicherung.
-
-### Ihr Partner im Schadensfall
-
-Egal ob Unfall, Sturm oder andere Einflüsse: Wir übernehmen die **komplette Schadensabwicklung** – inklusive Kommunikation mit der Versicherung, Gutachten, Kalkulation und allen nötigen Schritten. Dank freier Werkstattwahl im Haftpflichtfall setzen wir uns für Ihre Rechte und Leistungen ein.
-
-Damit Sie schnell wieder mobil sind, stellen wir Ihnen für die Dauer der Reparatur ein Ersatzfahrzeug zur Verfügung.
+Sie müssen nichts mit Gutachter oder Versicherung klären – Sie bringen nur Ihr Auto. [So läuft es ab](../../#ablauf) · [Darf ich die Werkstatt selbst wählen?](../../#faq)

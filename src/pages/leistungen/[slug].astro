@@ -7,7 +7,8 @@ import Faq from "../../components/Faq.astro";
 import CtaBand from "../../components/CtaBand.astro";
 import LeistungKarte from "../../components/LeistungKarte.astro";
 import Icon from "../../components/Icon.astro";
-import { u } from "../../consts";
+import WohnwagenGrafik from "../../components/WohnwagenGrafik.astro";
+import { MELDEN, SITE, telLink, u } from "../../consts";
 import { faqSchema } from "../../data/home";
 
 export async function getStaticPaths() {
@@ -18,6 +19,14 @@ const { l, alle } = Astro.props;
 const { Content } = await render(l);
 const d = l.data;
 const andere = alle.filter((x) => x.id !== l.id);
+// „Schaden melden“ mit passender Vorauswahl im Formular (weniger Klicks für den Kunden)
+const vorwahl: Record<string, string> = {
+  unfallservice: "?art=unfall",
+  "smart-repair": "?art=kratzer",
+  "autoglas-steinschlagreparatur": "?art=glas",
+  "wohnwagen-lackierung": "?fahrzeug=wohnwagen",
+};
+const meldenHref = MELDEN.href + (vorwahl[l.id] ?? "");
 const crumbs = [
   { name: "Leistungen", href: u("leistungen/") },
   { name: d.kurz, href: u(`leistungen/${l.id}/`) },
@@ -39,7 +48,9 @@ const serviceSchema = {
   crumbs={crumbs}
   schema={[serviceSchema, ...(d.faq.length ? [faqSchema(d.faq)] : [])]}
 >
-  <PageHero eyebrow={`Leistung · ${d.kurz}`} titel={d.title} akzent={d.akzent} lead={d.lead} bild={d.bild} alt={d.bildAlt} crumbs={crumbs} />
+  <PageHero eyebrow={`Leistung · ${d.kurz}`} problem={d.problem} titel={d.title} akzent={d.akzent} lead={d.lead} bild={d.bild} alt={d.bildAlt} crumbs={crumbs} meldenHref={meldenHref}>
+    {!d.bild && <WohnwagenGrafik slot="grafik" />}
+  </PageHero>
 
   <section class="section">
     <div class="container ld">
@@ -49,8 +60,9 @@ const serviceSchema = {
       <aside class="ld__box reveal" aria-labelledby="punkte-titel">
         <h2 id="punkte-titel" class="ld__boxtitel">{d.punkteTitel}</h2>
         <ul class="haken">{d.punkte.map((p) => <li>{p}</li>)}</ul>
-        <a class="btn glanz" href={u("kontakt-anfahrt/#anfrage")}>Kostenlos begutachten lassen</a>
-        {!d.bildEcht && <p class="ld__hinweis">Abbildung oben: Symbolbild.</p>}
+        <a class="btn glanz" href={meldenHref}><Icon name="doc" size={22} /> {MELDEN.label}</a>
+        <p class="ld__oder">oder anrufen: <a href={telLink}>{SITE.phoneDisplay}</a></p>
+        {d.bild && !d.bildEcht && <p class="ld__hinweis">Abbildung oben: Symbolbild.</p>}
       </aside>
     </div>
   </section>
@@ -95,9 +107,9 @@ const serviceSchema = {
         <p class="eyebrow">Weitere Leistungen</p>
         <h2>Das können wir <span class="spray akzent">auch</span></h2>
       </div>
-      <div class="grid g-4">
+      <div class="grid g-3">
         {andere.map((x) => (
-          <LeistungKarte href={u(`leistungen/${x.id}/`)} titel={x.data.kurz} text={x.data.teaser} icon={x.data.icon} bild={x.data.bild} alt={x.data.bildAlt} nr={x.data.order} />
+          <LeistungKarte href={u(`leistungen/${x.id}/`)} problem={x.data.problem} titel={x.data.kurz} text={x.data.teaser} icon={x.data.icon} bild={x.data.bild} alt={x.data.bildAlt} nr={x.data.order} />
         ))}
       </div>
     </div>
@@ -119,6 +131,8 @@ const serviceSchema = {
   .ld__boxtitel { color: var(--weiss); font-size: 26px; margin-bottom: 18px; }
   .ld__box .haken { margin-bottom: 24px; }
   .ld__box :global(.btn) { width: 100%; }
+  .ld__oder { margin: 12px 0 0; font-size: 15px; color: var(--s-300); text-align: center; }
+  .ld__oder a { color: var(--weiss); font-weight: 700; }
   .ld__hinweis { margin: 14px 0 0; font-size: 13px; color: var(--s-400); }
   .vt { list-style: none; margin: 0; padding: 0; }
   .vt__icon { display: inline-grid; place-items: center; width: 50px; height: 50px; border-radius: 12px; background: var(--rot-hell); color: var(--rot-dunkel); margin-bottom: 14px; }
