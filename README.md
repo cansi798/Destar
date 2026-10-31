@@ -50,3 +50,8 @@ bash scripts/deploy.sh    # bauen und dist/ als Branch main pushen
 
 Bei Umzug auf die eigene Domain: in `astro.config.mjs` `site` anpassen und `base` auf `'/'` setzen,
 Hosting-Abschnitt in der Datenschutzerklärung aktualisieren.
+
+## Lizenz
+
+Alle Rechte vorbehalten – © 2026 Waybuild UG (haftungsbeschränkt). Siehe [`LICENSE`](LICENSE).
+Die Einsicht über GitHub ist nur zur Ansicht gestattet; Kopieren, Weiterverwenden oder Bearbeiten ist ohne schriftliche Zustimmung nicht erlaubt.
